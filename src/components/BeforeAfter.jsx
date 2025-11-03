@@ -61,19 +61,19 @@ const BeforeAfter = ({ beforeImage, afterImage, className = '' }) => {
       className={`before-after-container ${className}`}
       onClick={handleClick}
     >
-      {/* Before Image (full width) */}
-      <div className="before-image-wrapper">
-        <img src={beforeImage} alt="Before" className="comparison-image" />
-        <div className="image-label before-label">변환 전</div>
-      </div>
-
-      {/* After Image (clipped by slider) */}
-      <div 
-        className="after-image-wrapper"
-        style={{ clipPath: `inset(0 ${100 - sliderPosition}% 0 0)` }}
-      >
+      {/* After Image (full width - 변환 후가 배경) */}
+      <div className="after-image-wrapper-full">
         <img src={afterImage} alt="After" className="comparison-image" />
         <div className="image-label after-label">변환 후</div>
+      </div>
+
+      {/* Before Image (clipped by slider - 원본이 슬라이더) */}
+      <div 
+        className="before-image-wrapper-clipped"
+        style={{ clipPath: `inset(0 0 0 ${sliderPosition}%)` }}
+      >
+        <img src={beforeImage} alt="Before" className="comparison-image" />
+        <div className="image-label before-label">원본</div>
       </div>
 
       {/* Slider */}
@@ -104,10 +104,11 @@ const BeforeAfter = ({ beforeImage, afterImage, className = '' }) => {
           cursor: ew-resize;
           user-select: none;
           box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+          background: #f5f5f5;
         }
 
-        .before-image-wrapper,
-        .after-image-wrapper {
+        .after-image-wrapper-full,
+        .before-image-wrapper-clipped {
           position: absolute;
           top: 0;
           left: 0;
@@ -115,14 +116,14 @@ const BeforeAfter = ({ beforeImage, afterImage, className = '' }) => {
           height: 100%;
         }
 
-        .after-image-wrapper {
+        .before-image-wrapper-clipped {
           position: absolute;
         }
 
         .comparison-image {
           width: 100%;
           height: 100%;
-          object-fit: cover;
+          object-fit: contain;
           display: block;
           pointer-events: none;
         }
