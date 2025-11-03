@@ -1123,11 +1123,97 @@ export const artStyles = [
 
   // ==================== 11. 동양화 ====================
   
+  // ============= 동양화 (Oriental Art) - 국가별 3개 =============
+  
   {
-    id: 'korean-minhwa',
+    id: 'korean',
     category: 'oriental',
     model: 'SDXL',
     order: 39,
+    name: '한국',
+    nameEn: 'Korean Art',
+    description: '한국 전통 미술',
+    artist: {
+      name: '한국 전통 미술',
+      nameEn: 'Korean Traditional Art',
+      period: '조선시대 (1400-1900)',
+      birth: null,
+      death: null,
+      lifespan: '조선시대 (1400-1900)',
+      nationality: '한국',
+      movement: '동양화',
+      features: '민화, 수묵화, 단청',
+      masterpieces: ['호작도', '인왕제색도', '경복궁 단청'],
+      intro: '한국 전통 미술. AI가 사진 특성에 따라 민화, 수묵화, 단청 중 최적의 스타일을 자동으로 선택합니다.'
+    },
+    prompt: 'Korean traditional art style, vibrant folk painting or elegant ink wash or decorative dancheong, Korean aesthetic with obangsaek colors, traditional Korean paper texture, painted in Joseon dynasty masterpiece quality',
+    color: '#FF6B6B',
+    icon: '🇰🇷',
+    // AI가 선택할 하위 스타일들
+    subStyles: ['korean-minhwa', 'korean-sumukhwa', 'korean-dancheong']
+  },
+
+  {
+    id: 'chinese',
+    category: 'oriental',
+    model: 'SDXL',
+    order: 40,
+    name: '중국',
+    nameEn: 'Chinese Art',
+    description: '중국 전통 미술',
+    artist: {
+      name: '중국 전통 미술',
+      nameEn: 'Chinese Traditional Art',
+      period: '송~청대 (1000-1900)',
+      birth: null,
+      death: null,
+      lifespan: '송~청대 (1000-1900)',
+      nationality: '중국',
+      movement: '동양화',
+      features: '수묵화, 공필화, 산수화',
+      masterpieces: ['제백석의 새우', '청명상하도', '천리강산도'],
+      intro: '중국 전통 미술. AI가 사진 특성에 따라 수묵화, 공필화, 산수화 중 최적의 스타일을 자동으로 선택합니다.'
+    },
+    prompt: 'Chinese traditional art style, ink wash painting or meticulous gongbi or majestic landscape, Chinese aesthetic with mineral pigments, elegant brushwork, painted in Song-Qing dynasty masterpiece quality',
+    color: '#DC143C',
+    icon: '🇨🇳',
+    subStyles: ['chinese-ink', 'chinese-gongbi', 'chinese-landscape']
+  },
+
+  {
+    id: 'japanese',
+    category: 'oriental',
+    model: 'SDXL',
+    order: 41,
+    name: '일본',
+    nameEn: 'Japanese Art',
+    description: '일본 전통 미술',
+    artist: {
+      name: '일본 전통 미술',
+      nameEn: 'Japanese Traditional Art',
+      period: '에도시대 (1600-1900)',
+      birth: null,
+      death: null,
+      lifespan: '에도시대 (1600-1900)',
+      nationality: '일본',
+      movement: '동양화',
+      features: '우키요에, 수묵화, 린파',
+      masterpieces: ['호쿠사이의 파도', '셋슈의 산수도', '고린의 홍백매도'],
+      intro: '일본 전통 미술. AI가 사진 특성에 따라 우키요에, 수묵화, 린파 중 최적의 스타일을 자동으로 선택합니다.'
+    },
+    prompt: 'Japanese traditional art style, ukiyo-e woodblock print or zen ink painting or rinpa decorative art, Japanese aesthetic with elegant simplicity, traditional Japanese paper texture, painted in Edo period masterpiece quality',
+    color: '#4169E1',
+    icon: '🇯🇵',
+    subStyles: ['japanese-ukiyoe', 'japanese-sumi-e', 'japanese-rinpa']
+  },
+
+  // ============= 하위 스타일들 (숨김 - AI 선택용) =============
+  
+  {
+    id: 'korean-minhwa',
+    category: 'oriental-detail',  // 숨김 카테고리
+    model: 'SDXL',
+    order: 100,
     name: '한국 민화',
     nameEn: 'Korean Minhwa',
     description: '호랑이와 모란의 해학',
@@ -1151,9 +1237,9 @@ export const artStyles = [
 
   {
     id: 'korean-sumukhwa',
-    category: 'oriental',
+    category: 'oriental-detail',
     model: 'SDXL',
-    order: 40,
+    order: 101,
     name: '한국 수묵화',
     nameEn: 'Korean Ink Painting',
     description: '절제된 먹과 선비정신',
@@ -1177,9 +1263,9 @@ export const artStyles = [
 
   {
     id: 'korean-dancheong',
-    category: 'oriental',
+    category: 'oriental-detail',
     model: 'SDXL',
-    order: 41,
+    order: 102,
     name: '한국 단청',
     nameEn: 'Korean Dancheong',
     description: '화려한 궁궐과 사찰 장식',
@@ -1203,9 +1289,9 @@ export const artStyles = [
 
   {
     id: 'chinese-ink',
-    category: 'oriental',
+    category: 'oriental-detail',
     model: 'SDXL',
-    order: 42,
+    order: 103,
     name: '중국 수묵화',
     nameEn: 'Chinese Ink Painting',
     description: '먹의 농담과 여백의 미',
@@ -1229,9 +1315,9 @@ export const artStyles = [
 
   {
     id: 'chinese-gongbi',
-    category: 'oriental',
+    category: 'oriental-detail',
     model: 'SDXL',
-    order: 43,
+    order: 104,
     name: '중국 공필화',
     nameEn: 'Chinese Gongbi',
     description: '섬세한 필치와 화려한 채색',
@@ -1255,9 +1341,9 @@ export const artStyles = [
 
   {
     id: 'chinese-landscape',
-    category: 'oriental',
+    category: 'oriental-detail',
     model: 'SDXL',
-    order: 44,
+    order: 105,
     name: '중국 산수화',
     nameEn: 'Chinese Landscape',
     description: '웅장한 산과 구름',
@@ -1281,9 +1367,9 @@ export const artStyles = [
 
   {
     id: 'japanese-ukiyoe',
-    category: 'oriental',
+    category: 'oriental-detail',
     model: 'SDXL',
-    order: 45,
+    order: 106,
     name: '일본 우키요에',
     nameEn: 'Japanese Ukiyo-e',
     description: '파도와 후지산',
@@ -1307,9 +1393,9 @@ export const artStyles = [
 
   {
     id: 'japanese-sumi-e',
-    category: 'oriental',
+    category: 'oriental-detail',
     model: 'SDXL',
-    order: 46,
+    order: 107,
     name: '일본 수묵화',
     nameEn: 'Japanese Sumi-e',
     description: '선의 정신과 여백',
@@ -1333,9 +1419,9 @@ export const artStyles = [
 
   {
     id: 'japanese-rinpa',
-    category: 'oriental',
+    category: 'oriental-detail',
     model: 'SDXL',
-    order: 47,
+    order: 108,
     name: '일본 린파',
     nameEn: 'Japanese Rinpa',
     description: '금박의 화려함',

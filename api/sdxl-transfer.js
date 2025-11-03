@@ -88,6 +88,22 @@ const fallbackPrompts = {
     prompt: 'Surrealist painting by Salvador Dalí, dreamlike hyperrealistic details, melting distorted forms, bizarre juxtapositions, subconscious imagery, precise meticulous technique'
   },
   
+  korean: {
+    name: '한국',
+    prompt: 'Korean traditional art style, vibrant folk painting or elegant ink wash or decorative dancheong, Korean aesthetic with obangsaek colors, traditional Korean paper texture'
+  },
+  
+  chinese: {
+    name: '중국',
+    prompt: 'Chinese traditional art style, ink wash painting or meticulous gongbi or majestic landscape, Chinese aesthetic with mineral pigments, elegant brushwork'
+  },
+  
+  japanese: {
+    name: '일본',
+    prompt: 'Japanese traditional art style, ukiyo-e woodblock print or zen ink painting or rinpa decorative art, Japanese aesthetic with elegant simplicity'
+  },
+  
+  // 하위 스타일들 (AI 선택용)
   korean_minhwa: {
     name: '한국 민화',
     prompt: 'Korean Minhwa folk painting style, bright vibrant colors, bold dark outlines, flat decorative composition, auspicious symbolic motifs, cheerful optimistic mood, traditional Korean aesthetic'
