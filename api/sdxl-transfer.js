@@ -93,14 +93,44 @@ const fallbackPrompts = {
     prompt: 'Korean Minhwa folk painting style, bright vibrant colors, bold dark outlines, flat decorative composition, auspicious symbolic motifs, cheerful optimistic mood, traditional Korean aesthetic'
   },
   
+  korean_sumukhwa: {
+    name: '한국 수묵화',
+    prompt: 'Korean literati ink painting style, restrained elegant brushwork, subtle ink gradations, scholarly refinement, Korean mountains and pine trees, modest understated beauty, painted in Joseon scholar painting masterpiece quality'
+  },
+  
+  korean_dancheong: {
+    name: '한국 단청',
+    prompt: 'Korean dancheong decorative painting style, vibrant five traditional colors, symmetrical geometric patterns, ornate Buddhist temple decoration, intricate lotus and cloud motifs, brilliant saturated colors with gold accents'
+  },
+  
   chinese_ink: {
     name: '중국 수묵화',
     prompt: 'Chinese ink wash painting (Shuimohua) style, monochrome black ink tones, soft flowing brushstrokes, minimalist composition, elegant empty space (留白), contemplative serene atmosphere, traditional East Asian aesthetic'
   },
   
+  chinese_gongbi: {
+    name: '중국 공필화',
+    prompt: 'Chinese gongbi meticulous painting style, extremely fine detailed brushwork, delicate precise lines, rich mineral pigments, birds and flowers, brilliant colors with intricate patterns, painted in imperial court gongbi masterpiece quality'
+  },
+  
+  chinese_landscape: {
+    name: '중국 산수화',
+    prompt: 'Chinese landscape painting (shanshui) style, majestic towering mountains with misty atmosphere, blue-green mineral pigments, cascading waterfalls and winding rivers, painted in Song-Ming dynasty shanshui masterpiece quality'
+  },
+  
   japanese_ukiyoe: {
     name: '일본 우키요에',
     prompt: 'Japanese Ukiyo-e woodblock print style, flat areas of bold color, strong clear outlines, decorative patterns, stylized simplified forms, traditional Japanese aesthetic'
+  },
+  
+  japanese_sumi_e: {
+    name: '일본 수묵화',
+    prompt: 'Japanese sumi-e ink painting style, Zen Buddhist aesthetic with minimalist brushwork, spontaneous decisive strokes, profound simplicity and emptiness, wabi-sabi beauty, meditative atmosphere'
+  },
+  
+  japanese_rinpa: {
+    name: '일본 린파',
+    prompt: 'Japanese Rinpa school decorative painting style, luxurious gold and silver leaf backgrounds, elegant curved flowing forms, stylized nature motifs, flat bold colors, aristocratic refined beauty'
   },
   
   masters: {
