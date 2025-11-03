@@ -76,8 +76,8 @@ const callFluxAPI = async (photoBase64, stylePrompt, onProgress) => {
 };
 
 // SDXL API call
-const callSDXLAPI = async (photoBase64, stylePrompt, onProgress) => {
-  if (onProgress) onProgress('SDXL 표준 변환 시작...');
+const callSDXLAPI = async (photoBase64, selectedStyle, onProgress) => {
+  if (onProgress) onProgress('AI 자동 화가 선택 시작...');
 
   const response = await fetch('/api/sdxl-transfer', {
     method: 'POST',
@@ -86,9 +86,7 @@ const callSDXLAPI = async (photoBase64, stylePrompt, onProgress) => {
     },
     body: JSON.stringify({
       image: photoBase64,
-      prompt: stylePrompt,
-      num_inference_steps: 30,
-      guidance_scale: 7.5
+      selectedStyle: selectedStyle
     })
   });
 
@@ -153,7 +151,7 @@ export const processStyleTransfer = async (photoFile, selectedStyle, apiKey, onP
     if (modelConfig.model.includes('flux')) {
       prediction = await callFluxAPI(photoBase64, selectedStyle.prompt, onProgress);
     } else {
-      prediction = await callSDXLAPI(photoBase64, selectedStyle.prompt, onProgress);
+      prediction = await callSDXLAPI(photoBase64, selectedStyle, onProgress);
     }
 
     // 4. Poll for result
@@ -184,7 +182,11 @@ export const processStyleTransfer = async (photoFile, selectedStyle, apiKey, onP
       remoteUrl: resultUrl,
       model: modelConfig.model,
       cost: modelConfig.cost,
-      time: modelConfig.time
+      time: modelConfig.time,
+      // AI 선택 정보 추가
+      aiSelectedArtist: result.selected_artist,
+      selectionMethod: result.selection_method,
+      selectionDetails: result.selection_details
     };
 
   } catch (error) {
