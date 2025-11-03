@@ -1150,10 +1150,62 @@ export const artStyles = [
   },
 
   {
-    id: 'chinese-ink',
+    id: 'korean-sumukhwa',
     category: 'oriental',
     model: 'SDXL',
     order: 40,
+    name: '한국 수묵화',
+    nameEn: 'Korean Ink Painting',
+    description: '절제된 먹과 선비정신',
+    artist: {
+      name: '한국 수묵화 양식',
+      nameEn: 'Korean Literati Ink Painting Style',
+      period: '조선시대 (1400-1900)',
+      birth: null,
+      death: null,
+      lifespan: '조선시대 (1400-1900)',
+      nationality: '한국',
+      movement: '동양화',
+      features: '절제된 필치, 담묵, 선비 정신',
+      masterpieces: ['겸재 정선의 인왕제색도', '추사 김정희의 세한도', '단원 김홍도의 풍속화'],
+      intro: '조선 문인들의 정신세계. 절제된 먹으로 자연과 일상을 담았으며, 중국과는 다른 한국적 여백미와 소박함을 보여줍니다.'
+    },
+    prompt: 'Korean literati ink painting style, restrained elegant brushwork with subtle ink gradations, scholarly refinement and simplicity, Korean mountains and pine trees, modest understated beauty, gentle atmospheric perspective, hanji paper texture, painted in Joseon scholar painting masterpiece quality',
+    color: '#5D4E37',
+    icon: '🏔️'
+  },
+
+  {
+    id: 'korean-dancheong',
+    category: 'oriental',
+    model: 'SDXL',
+    order: 41,
+    name: '한국 단청',
+    nameEn: 'Korean Dancheong',
+    description: '화려한 궁궐과 사찰 장식',
+    artist: {
+      name: '한국 단청 양식',
+      nameEn: 'Korean Traditional Decorative Painting Style',
+      period: '삼국~조선시대 (400-1900)',
+      birth: null,
+      death: null,
+      lifespan: '삼국~조선시대 (400-1900)',
+      nationality: '한국',
+      movement: '동양화',
+      features: '오방색, 기하학 문양, 대칭 구조',
+      masterpieces: ['경복궁 단청', '불국사 단청', '해인사 팔만대장경'],
+      intro: '궁궐과 사찰을 장식한 한국 전통 채색화. 오방색의 화려한 조화와 기하학적 문양으로 신성함과 권위를 표현합니다.'
+    },
+    prompt: 'Korean dancheong decorative painting style, vibrant five traditional colors (obangsaek: blue, red, yellow, white, black), symmetrical geometric patterns, ornate Buddhist temple decoration, intricate lotus and cloud motifs, royal palace architectural painting, brilliant saturated colors with gold accents, painted in traditional Korean dancheong masterpiece quality',
+    color: '#FFD700',
+    icon: '🏯'
+  },
+
+  {
+    id: 'chinese-ink',
+    category: 'oriental',
+    model: 'SDXL',
+    order: 42,
     name: '중국 수묵화',
     nameEn: 'Chinese Ink Painting',
     description: '먹의 농담과 여백의 미',
@@ -1176,10 +1228,62 @@ export const artStyles = [
   },
 
   {
+    id: 'chinese-gongbi',
+    category: 'oriental',
+    model: 'SDXL',
+    order: 43,
+    name: '중국 공필화',
+    nameEn: 'Chinese Gongbi',
+    description: '섬세한 필치와 화려한 채색',
+    artist: {
+      name: '중국 공필화 양식',
+      nameEn: 'Chinese Meticulous Painting Style',
+      period: '당~청대 (700-1900)',
+      birth: null,
+      death: null,
+      lifespan: '당~청대 (700-1900)',
+      nationality: '중국',
+      movement: '동양화',
+      features: '세밀한 필치, 화려한 채색, 궁중 회화',
+      masterpieces: ['당대 여사잠도', '송대 청명상하도', '청대 백준도'],
+      intro: '중국 궁중 회화의 극치. 극도로 세밀한 필치와 화려한 채색으로 꽃, 새, 인물을 정교하게 그려냅니다.'
+    },
+    prompt: 'Chinese gongbi meticulous painting style, extremely fine detailed brushwork, delicate precise lines, rich mineral pigments and gold leaf, birds and flowers (huaniao), elegant court ladies, brilliant colors with intricate patterns, silk painting texture, painted in imperial court gongbi masterpiece quality',
+    color: '#DC143C',
+    icon: '🦜'
+  },
+
+  {
+    id: 'chinese-landscape',
+    category: 'oriental',
+    model: 'SDXL',
+    order: 44,
+    name: '중국 산수화',
+    nameEn: 'Chinese Landscape',
+    description: '웅장한 산과 구름',
+    artist: {
+      name: '중국 산수화 양식',
+      nameEn: 'Chinese Landscape Painting Style',
+      period: '송~명대 (1000-1600)',
+      birth: null,
+      death: null,
+      lifespan: '송~명대 (1000-1600)',
+      nationality: '중국',
+      movement: '동양화',
+      features: '웅장한 산세, 안개와 구름, 청록색',
+      masterpieces: ['범관의 계산행려도', '곽희의 조춘도', '왕희맹의 천리강산도'],
+      intro: '중국 산수화의 대표. 웅장한 산과 유유히 흐르는 물로 우주의 이치를 담았으며, 청록색 채색으로 이상향을 표현합니다.'
+    },
+    prompt: 'Chinese landscape painting (shanshui) style, majestic towering mountains with misty atmosphere, blue-green mineral pigments (qinglü), cascading waterfalls and winding rivers, tiny figures in vast nature, traditional three-distance perspective, poetic inscription and seals, painted in Song-Ming dynasty shanshui masterpiece quality',
+    color: '#20B2AA',
+    icon: '⛰️'
+  },
+
+  {
     id: 'japanese-ukiyoe',
     category: 'oriental',
     model: 'SDXL',
-    order: 41,
+    order: 45,
     name: '일본 우키요에',
     nameEn: 'Japanese Ukiyo-e',
     description: '파도와 후지산',
@@ -1199,6 +1303,58 @@ export const artStyles = [
     prompt: 'Japanese Ukiyo-e woodblock print style, bold graphic composition with dramatic cropping, vibrant flat colors with Prussian blue, The Great Wave and Mount Fuji motifs, beautiful geisha and landscapes, strong black outlines, stylized clouds and water, intricate kimono patterns, painted in Edo period ukiyo-e masterpiece quality',
     color: '#4169E1',
     icon: '🗻'
+  },
+
+  {
+    id: 'japanese-sumi-e',
+    category: 'oriental',
+    model: 'SDXL',
+    order: 46,
+    name: '일본 수묵화',
+    nameEn: 'Japanese Sumi-e',
+    description: '선의 정신과 여백',
+    artist: {
+      name: '일본 수묵화 양식',
+      nameEn: 'Japanese Zen Ink Painting Style',
+      period: '가마쿠라~에도 (1200-1900)',
+      birth: null,
+      death: null,
+      lifespan: '가마쿠라~에도 (1200-1900)',
+      nationality: '일본',
+      movement: '동양화',
+      features: '선종 정신, 간결한 필치, 여백',
+      masterpieces: ['셋슈의 파묵산수도', '하쿠인의 달마', '센가이의 원상삼각사각'],
+      intro: '선종의 영향을 받은 일본 수묵화. 최소한의 붓질로 본질을 포착하며, 여백을 통해 무를 표현합니다.'
+    },
+    prompt: 'Japanese sumi-e ink painting style, Zen Buddhist aesthetic with minimalist brushwork, spontaneous decisive strokes, bamboo orchids and landscapes, profound simplicity and emptiness, wabi-sabi imperfect beauty, meditative atmosphere, rice paper texture, painted in Japanese Zen sumi-e masterpiece quality',
+    color: '#696969',
+    icon: '🎋'
+  },
+
+  {
+    id: 'japanese-rinpa',
+    category: 'oriental',
+    model: 'SDXL',
+    order: 47,
+    name: '일본 린파',
+    nameEn: 'Japanese Rinpa',
+    description: '금박의 화려함',
+    artist: {
+      name: '일본 린파 양식',
+      nameEn: 'Japanese Rinpa School Style',
+      period: '에도시대 (1600-1900)',
+      birth: null,
+      death: null,
+      lifespan: '에도시대 (1600-1900)',
+      nationality: '일본',
+      movement: '동양화',
+      features: '금박과 은박, 장식적, 우아한 곡선',
+      masterpieces: ['오가타 고린의 홍백매도', '소타츠의 풍신뇌신도', '호잇수의 연못'],
+      intro: '일본 장식미의 극치. 금박과 은박으로 화려하게 장식하며, 우아한 곡선과 대담한 생략으로 귀족적 아름다움을 표현합니다.'
+    },
+    prompt: 'Japanese Rinpa school decorative painting style, luxurious gold and silver leaf backgrounds, elegant curved flowing forms, stylized nature motifs (plum blossoms, irises, waves), flat bold colors with tarashikomi technique, aristocratic refined beauty, ornamental screen painting, painted in Edo period Rinpa masterpiece quality',
+    color: '#FFD700',
+    icon: '🌸'
   }
 ];
 

@@ -56,6 +56,20 @@ const StyleSelection = ({ onSelect }) => {
     setSubCategory(mainCategories[newMainCategory].subcategories[0]);
   };
 
+  // 미술사조 탭 클릭 시 바로 선택 처리
+  const handleSubCategoryClick = (categoryKey) => {
+    setSubCategory(categoryKey);
+    
+    // 미술사조(movements)인 경우 바로 선택
+    if (mainCategory === 'movements') {
+      const categoryStyles = groupedStyles[categoryKey]?.styles || [];
+      if (categoryStyles.length > 0) {
+        // 해당 카테고리의 첫 번째 스타일을 대표로 선택
+        onSelect(categoryStyles[0]);
+      }
+    }
+  };
+
   return (
     <div className="style-selection">
       <div className="selection-container">
@@ -90,7 +104,7 @@ const StyleSelection = ({ onSelect }) => {
               <button
                 key={key}
                 className={`sub-category-tab ${subCategory === key ? 'active' : ''}`}
-                onClick={() => setSubCategory(key)}
+                onClick={() => handleSubCategoryClick(key)}
               >
                 <span className="tab-name">{styleCategories[key].name}</span>
                 <span className="tab-period">{styleCategories[key].period}</span>
@@ -100,24 +114,25 @@ const StyleSelection = ({ onSelect }) => {
           </div>
         </div>
 
-        {/* 3단계: 개별 화가/스타일 선택 */}
-        <div className="styles-section">
-          {groupedStyles[subCategory] && (
-            <>
-              <div className="section-header">
-                <h2>{groupedStyles[subCategory].category.name}</h2>
-                <p className="section-period">
-                  {groupedStyles[subCategory].category.period}
-                </p>
-              </div>
+        {/* 3단계: 개별 화가/스타일 선택 (거장과 동양화만 표시) */}
+        {mainCategory !== 'movements' && (
+          <div className="styles-section">
+            {groupedStyles[subCategory] && (
+              <>
+                <div className="section-header">
+                  <h2>{groupedStyles[subCategory].category.name}</h2>
+                  <p className="section-period">
+                    {groupedStyles[subCategory].category.period}
+                  </p>
+                </div>
 
-              <div className="styles-grid">
-                {groupedStyles[subCategory].styles.map(style => (
-                  <button
-                    key={style.id}
-                    className="style-card"
-                    onClick={() => onSelect(style)}
-                  >
+                <div className="styles-grid">
+                  {groupedStyles[subCategory].styles.map(style => (
+                    <button
+                      key={style.id}
+                      className="style-card"
+                      onClick={() => onSelect(style)}
+                    >
                     <div className="card-icon">{style.icon}</div>
                     
                     <div className="card-content">
@@ -153,6 +168,7 @@ const StyleSelection = ({ onSelect }) => {
             </>
           )}
         </div>
+        )}
       </div>
 
       <style>{`
