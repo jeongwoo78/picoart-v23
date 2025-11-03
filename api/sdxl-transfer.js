@@ -8,6 +8,11 @@ const fallbackPrompts = {
     prompt: 'ancient Greek and Roman classical painting style, idealized human forms, marble-like smooth rendering, heroic noble figures, classical drapery, temple architecture, serene dignified expressions, painted in ancient classical masterpiece quality'
   },
   
+  byzantineIslamic: {
+    name: '비잔틴·이슬람',
+    prompt: 'Byzantine and Islamic art style, golden mosaic backgrounds, ornate geometric patterns, rich jewel-like colors, spiritual iconic forms, decorative arabesque motifs, sacred dignified atmosphere, painted in Byzantine-Islamic masterpiece quality'
+  },
+  
   renaissance: {
     name: '르네상스',
     prompt: 'Renaissance painting style, soft sfumato technique, harmonious balanced composition, warm golden Renaissance colors, detailed naturalistic rendering, gentle serene expressions, classical perspective, painted in Renaissance masterpiece quality'
@@ -34,6 +39,11 @@ const fallbackPrompts = {
   },
   
   post_impressionism: {
+    name: '후기인상주의',
+    prompt: 'Post-Impressionist painting style, bold expressive colors, geometric structured forms, emotional symbolic content, innovative personal vision, painted in Post-Impressionist masterpiece quality'
+  },
+  
+  postImpressionism: {
     name: '후기인상주의',
     prompt: 'Post-Impressionist painting style, bold expressive colors, geometric structured forms, emotional symbolic content, innovative personal vision, painted in Post-Impressionist masterpiece quality'
   },
@@ -91,6 +101,16 @@ const fallbackPrompts = {
   japanese_ukiyoe: {
     name: '일본 우키요에',
     prompt: 'Japanese Ukiyo-e woodblock print style, flat areas of bold color, strong clear outlines, decorative patterns, stylized simplified forms, traditional Japanese aesthetic'
+  },
+  
+  masters: {
+    name: '거장 화풍',
+    prompt: 'Master artist painting style, exceptional technical skill, distinctive artistic vision, profound emotional depth, timeless masterpiece quality'
+  },
+  
+  oriental: {
+    name: '동양화',
+    prompt: 'Traditional East Asian painting style, ink wash brushwork, minimalist composition, harmony with nature, philosophical contemplation, painted in classical Oriental masterpiece quality'
   }
 };
 
@@ -257,7 +277,15 @@ export default async function handler(req, res) {
       } else {
         // AI 실패 → Fallback
         console.log('⚠️ AI failed, using fallback');
+        console.log('selectedStyle.category:', selectedStyle.category);
         const fallback = fallbackPrompts[selectedStyle.category];
+        
+        if (!fallback) {
+          console.error('ERROR: No fallback found for category:', selectedStyle.category);
+          console.error('Available categories:', Object.keys(fallbackPrompts));
+          throw new Error(`No fallback prompt for category: ${selectedStyle.category}`);
+        }
+        
         finalPrompt = fallback.prompt;
         selectedArtist = fallback.name;
         selectionMethod = 'fallback';
@@ -268,7 +296,15 @@ export default async function handler(req, res) {
     } else {
       // ANTHROPIC_API_KEY 없음 → Fallback
       console.log('ℹ️ No AI key, using fallback');
+      console.log('selectedStyle.category:', selectedStyle.category);
       const fallback = fallbackPrompts[selectedStyle.category];
+      
+      if (!fallback) {
+        console.error('ERROR: No fallback found for category:', selectedStyle.category);
+        console.error('Available categories:', Object.keys(fallbackPrompts));
+        throw new Error(`No fallback prompt for category: ${selectedStyle.category}`);
+      }
+      
       finalPrompt = fallback.prompt;
       selectedArtist = fallback.name;
       selectionMethod = 'fallback_no_key';
