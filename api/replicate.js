@@ -31,8 +31,8 @@ export default async function handler(req, res) {
         input: {
           prompt: prompt,
           control_image: image,
-          control_type: "depth",          // depth (3D 깊이 기반)
-          control_strength: 0.5,          // 원본과 화풍의 균형
+          control_type: "depth",
+          control_strength: 0.5,
           steps: 28,
           guidance_scale: 3.5,
           output_format: "jpg",
