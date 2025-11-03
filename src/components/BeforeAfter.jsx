@@ -1,136 +1,44 @@
-// PicoArt v22 - BeforeAfter Comparison Slider
-import React, { useState, useRef, useEffect } from 'react';
+// PicoArt v23 - BeforeAfter Vertical Layout
+import React from 'react';
 
 const BeforeAfter = ({ beforeImage, afterImage, className = '' }) => {
-  const [sliderPosition, setSliderPosition] = useState(50);
-  const [isDragging, setIsDragging] = useState(false);
-  const containerRef = useRef(null);
-
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (!isDragging || !containerRef.current) return;
-      updateSliderPosition(e.clientX);
-    };
-
-    const handleTouchMove = (e) => {
-      if (!isDragging || !containerRef.current) return;
-      updateSliderPosition(e.touches[0].clientX);
-    };
-
-    const handleMouseUp = () => {
-      setIsDragging(false);
-    };
-
-    if (isDragging) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('touchmove', handleTouchMove);
-      document.addEventListener('mouseup', handleMouseUp);
-      document.addEventListener('touchend', handleMouseUp);
-    }
-
-    return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('touchmove', handleTouchMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-      document.removeEventListener('touchend', handleMouseUp);
-    };
-  }, [isDragging]);
-
-  const updateSliderPosition = (clientX) => {
-    if (!containerRef.current) return;
-
-    const rect = containerRef.current.getBoundingClientRect();
-    const x = clientX - rect.left;
-    const percentage = (x / rect.width) * 100;
-    const clampedPercentage = Math.max(0, Math.min(100, percentage));
-    setSliderPosition(clampedPercentage);
-  };
-
-  const handleMouseDown = () => {
-    setIsDragging(true);
-  };
-
-  const handleClick = (e) => {
-    if (!containerRef.current) return;
-    updateSliderPosition(e.clientX);
-  };
-
   return (
-    <div 
-      ref={containerRef}
-      className={`before-after-container ${className}`}
-      onClick={handleClick}
-    >
-      {/* After Image (full width - 변환 후가 배경) */}
-      <div className="after-image-wrapper-full">
-        <img src={afterImage} alt="After" className="comparison-image" />
-        <div className="image-label after-label">변환 후</div>
+    <div className={`before-after-vertical ${className}`}>
+      {/* Before Image (위) */}
+      <div className="image-section before-section">
+        <div className="image-label-top">원본</div>
+        <img src={beforeImage} alt="원본" className="comparison-image-vertical" />
       </div>
 
-      {/* Before Image (clipped by slider - 원본이 슬라이더) */}
-      <div 
-        className="before-image-wrapper-clipped"
-        style={{ clipPath: `inset(0 0 0 ${sliderPosition}%)` }}
-      >
-        <img src={beforeImage} alt="Before" className="comparison-image" />
-        <div className="image-label before-label">원본</div>
-      </div>
-
-      {/* Slider */}
-      <div 
-        className="slider-line"
-        style={{ left: `${sliderPosition}%` }}
-        onMouseDown={handleMouseDown}
-        onTouchStart={handleMouseDown}
-      >
-        <div className="slider-handle">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M15 18l-6-6 6-6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M9 18l6-6-6-6" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </div>
+      {/* After Image (아래) */}
+      <div className="image-section after-section">
+        <div className="image-label-top">변환 후</div>
+        <img src={afterImage} alt="변환 후" className="comparison-image-vertical" />
       </div>
 
       <style>{`
-        .before-after-container {
-          position: relative;
+        .before-after-vertical {
           width: 100%;
           max-width: 800px;
           margin: 0 auto;
-          overflow: hidden;
-          border-radius: 12px;
-          cursor: ew-resize;
-          user-select: none;
-          box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+        }
+
+        .image-section {
+          position: relative;
+          width: 100%;
           background: #f5f5f5;
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.15);
         }
 
-        .after-image-wrapper-full,
-        .before-image-wrapper-clipped {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-        }
-
-        .before-image-wrapper-clipped {
-          position: absolute;
-        }
-
-        .comparison-image {
-          width: 100%;
-          height: 100%;
-          object-fit: contain;
-          display: block;
-          pointer-events: none;
-        }
-
-        .image-label {
+        .image-label-top {
           position: absolute;
           top: 1rem;
+          left: 1rem;
           padding: 0.5rem 1rem;
           background: rgba(0,0,0,0.7);
           color: white;
@@ -141,91 +49,28 @@ const BeforeAfter = ({ beforeImage, afterImage, className = '' }) => {
           z-index: 10;
         }
 
-        .before-label {
-          left: 1rem;
-        }
-
-        .after-label {
-          right: 1rem;
-        }
-
-        .slider-line {
-          position: absolute;
-          top: 0;
-          bottom: 0;
-          width: 4px;
-          background: white;
-          box-shadow: 0 0 10px rgba(0,0,0,0.5);
-          cursor: ew-resize;
-          z-index: 20;
-          transform: translateX(-50%);
-        }
-
-        .slider-handle {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          width: 48px;
-          height: 48px;
-          background: white;
-          border-radius: 50%;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: grab;
-          transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .slider-handle:hover {
-          transform: translate(-50%, -50%) scale(1.1);
-          box-shadow: 0 6px 16px rgba(0,0,0,0.4);
-        }
-
-        .slider-handle:active {
-          cursor: grabbing;
-          transform: translate(-50%, -50%) scale(0.95);
-        }
-
-        .slider-handle svg {
-          width: 20px;
-          height: 20px;
-        }
-
-        .slider-handle svg:first-child {
-          margin-right: -4px;
-        }
-
-        .slider-handle svg:last-child {
-          margin-left: -4px;
-        }
-
-        /* Aspect ratio container */
-        .before-after-container::before {
-          content: '';
+        .comparison-image-vertical {
+          width: 100%;
+          height: auto;
           display: block;
-          padding-top: 75%; /* 4:3 aspect ratio, adjust as needed */
+          object-fit: contain;
+          max-height: 600px;
         }
 
         @media (max-width: 640px) {
-          .image-label {
+          .before-after-vertical {
+            gap: 1rem;
+          }
+
+          .image-label-top {
             font-size: 0.75rem;
             padding: 0.375rem 0.75rem;
             top: 0.75rem;
-          }
-
-          .before-label {
             left: 0.75rem;
           }
 
-          .after-label {
-            right: 0.75rem;
-          }
-
-          .slider-handle {
-            width: 40px;
-            height: 40px;
+          .comparison-image-vertical {
+            max-height: 400px;
           }
         }
       `}</style>
