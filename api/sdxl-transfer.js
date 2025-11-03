@@ -324,7 +324,7 @@ export default async function handler(req, res) {
         },
         body: JSON.stringify({
           input: {
-            image: image,
+            control_image: image,
             prompt: finalPrompt,
             control_strength: 0.6,
             num_inference_steps: 28,
