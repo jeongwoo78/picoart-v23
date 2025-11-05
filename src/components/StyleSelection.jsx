@@ -144,17 +144,24 @@ const StyleSelection = ({ onSelect }) => {
         {/* 2단계: 소 카테고리 선택 (탭) */}
         <div className="sub-category-nav">
           <div className="sub-category-tabs">
-            {currentSubcategories.map(key => (
-              <button
-                key={key}
-                className={`sub-category-tab ${subCategory === key ? 'active' : ''}`}
-                onClick={() => handleSubCategoryClick(key)}
-              >
-                <span className="tab-name">{styleCategories[key].name}</span>
-                <span className="tab-period">{styleCategories[key].period}</span>
-                <span className="tab-count">{getCategoryCount(key)}개</span>
-              </button>
-            ))}
+            {currentSubcategories.map(key => {
+              const category = styleCategories[key];
+              if (!category) {
+                console.error(`Category not found: ${key}`);
+                return null;
+              }
+              return (
+                <button
+                  key={key}
+                  className={`sub-category-tab ${subCategory === key ? 'active' : ''}`}
+                  onClick={() => handleSubCategoryClick(key)}
+                >
+                  <span className="tab-name">{category.name}</span>
+                  <span className="tab-period">{category.period}</span>
+                  <span className="tab-count">{getCategoryCount(key)}개</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
