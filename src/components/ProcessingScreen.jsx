@@ -91,13 +91,13 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete }) => {
     
     // 2. 거장 탭 → 거장 소개 (educationContent에서 가져오기)
     if (category === 'masters') {
-      const masterId = selectedStyle.id.replace('-master', ''); // 'vangogh-master' → 'vangogh'
+      const masterId = selectedStyle.id; // '-master' 그대로 사용!
       const masterInfo = educationContent.masters[masterId];
       
       if (masterInfo) {
         return {
           title: masterInfo.title,
-          desc: masterInfo.content
+          desc: masterInfo.desc
         };
       }
       
