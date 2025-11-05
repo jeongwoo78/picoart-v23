@@ -1,10 +1,54 @@
-// PicoArt v23 - StyleSelection (3단계 구조: 대카테고리 → 소카테고리 → 화가)
-import React, { useState, useMemo } from 'react';
-import { artStyles, styleCategories } from '../data/artStyles';
+// PicoArt v23 - StyleSelection (간소화: AI가 자동 선택)
+import React, { useState } from 'react';
+import { educationContent } from '../data/educationContent';
 
 const StyleSelection = ({ onSelect }) => {
   const [mainCategory, setMainCategory] = useState('movements'); // movements, masters, oriental
   const [subCategory, setSubCategory] = useState('renaissance');
+
+  // 스타일 카테고리 정의
+  const styleCategories = {
+    ancient: { name: '고대 미술', period: 'BC 800 - AD 500' },
+    byzantineIslamic: { name: '비잔틴·이슬람', period: '4-14세기' },
+    renaissance: { name: '르네상스', period: '14-16세기' },
+    baroque: { name: '바로크', period: '17세기' },
+    rococo: { name: '로코코', period: '18세기' },
+    romanticism: { name: '낭만주의', period: '18세기 말-19세기' },
+    impressionism: { name: '인상주의', period: '19세기 후반' },
+    postImpressionism: { name: '후기인상주의', period: '1880-1900년대' },
+    fauvism: { name: '야수파', period: '20세기 초' },
+    expressionism: { name: '표현주의', period: '20세기 초' },
+    masters: { name: '거장 컬렉션', period: '시대를 초월한 거장들' },
+    oriental: { name: '동양화', period: '한·중·일 전통' }
+  };
+
+  // 스타일 데이터 (AI가 자동 선택하므로 최소 정보만)
+  const artStyles = [
+    // 미술사조
+    { id: 'ancient', name: '고대 미술', category: 'ancient', icon: '🏛️', description: '그리스·로마의 완벽한 균형미' },
+    { id: 'byzantineIslamic', name: '비잔틴·이슬람', category: 'byzantineIslamic', icon: '🕌', description: '신성한 황금 모자이크' },
+    { id: 'renaissance', name: '르네상스', category: 'renaissance', icon: '🎭', description: '인간 중심의 이상적 아름다움' },
+    { id: 'baroque', name: '바로크', category: 'baroque', icon: '👑', description: '극적이고 웅장한 표현' },
+    { id: 'rococo', name: '로코코', category: 'rococo', icon: '🌸', description: '우아하고 장식적인 취향' },
+    { id: 'romanticism', name: '낭만주의', category: 'romanticism', icon: '🌊', description: '감정과 자연의 숭고함' },
+    { id: 'impressionism', name: '인상주의', category: 'impressionism', icon: '🌅', description: '빛의 순간을 포착' },
+    { id: 'postImpressionism', name: '후기인상주의', category: 'postImpressionism', icon: '🌻', description: '감정과 구조의 탐구' },
+    { id: 'fauvism', name: '야수파', category: 'fauvism', icon: '🦁', description: '순수하고 강렬한 원색' },
+    { id: 'expressionism', name: '표현주의', category: 'expressionism', icon: '😱', description: '내면의 불안과 고독' },
+    
+    // 거장
+    { id: 'klimt-master', name: '구스타프 클림트', nameEn: 'Gustav Klimt', category: 'masters', icon: '✨', description: '금박과 장식의 화가' },
+    { id: 'picasso-master', name: '파블로 피카소', nameEn: 'Pablo Picasso', category: 'masters', icon: '🎨', description: '입체주의의 창시자' },
+    { id: 'vangogh-master', name: '빈센트 반 고흐', nameEn: 'Vincent van Gogh', category: 'masters', icon: '🌻', description: '격렬한 감정의 표현' },
+    { id: 'matisse-master', name: '앙리 마티스', nameEn: 'Henri Matisse', category: 'masters', icon: '🎭', description: '색채의 마술사' },
+    { id: 'munch-master', name: '에드바르 뭉크', nameEn: 'Edvard Munch', category: 'masters', icon: '😱', description: '불안과 고독의 화가' },
+    { id: 'dali-master', name: '살바도르 달리', nameEn: 'Salvador Dalí', category: 'masters', icon: '⏰', description: '초현실주의의 거장' },
+    
+    // 동양화
+    { id: 'korean', name: '한국 전통미술', nameEn: 'Korean Art', category: 'oriental', icon: '🎎', description: '여백의 미와 절제미' },
+    { id: 'chinese', name: '중국 전통미술', nameEn: 'Chinese Art', category: 'oriental', icon: '🐉', description: '기운생동의 수묵화' },
+    { id: 'japanese', name: '일본 전통미술', nameEn: 'Japanese Art', category: 'oriental', icon: '🗾', description: '섬세한 관찰과 대담한 생략' }
+  ];
 
   // 대 카테고리 정의
   const mainCategories = {
@@ -29,18 +73,13 @@ const StyleSelection = ({ onSelect }) => {
   };
 
   // 카테고리별로 스타일 그룹화
-  const groupedStyles = useMemo(() => {
-    const groups = {};
-    
-    Object.entries(styleCategories).forEach(([key, category]) => {
-      groups[key] = {
-        category,
-        styles: artStyles.filter(style => style.category === key)
-      };
-    });
-
-    return groups;
-  }, []);
+  const groupedStyles = {};
+  Object.keys(styleCategories).forEach(key => {
+    groupedStyles[key] = {
+      category: styleCategories[key],
+      styles: artStyles.filter(style => style.category === key)
+    };
+  });
 
   // 현재 대 카테고리의 소 카테고리들
   const currentSubcategories = mainCategories[mainCategory].subcategories;
