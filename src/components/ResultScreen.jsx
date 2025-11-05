@@ -19,22 +19,26 @@ const ResultScreen = ({ originalPhoto, resultImage, selectedStyle, aiSelectedArt
       
       const prompt = buildPrompt();
       
-      // Anthropic API 호출
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      // 백엔드 API 호출
+      const response = await fetch('/api/generate-education', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 500,
-          messages: [{ role: 'user', content: prompt }]
-        })
+        body: JSON.stringify({ prompt })
       });
+
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status}`);
+      }
       
       const data = await response.json();
-      const generatedText = data.content[0].text;
-      setEducationText(generatedText);
+      
+      if (data.success && data.text) {
+        setEducationText(data.text);
+      } else {
+        throw new Error('Invalid response format');
+      }
       
     } catch (error) {
       console.error('2nd education generation failed:', error);
@@ -174,9 +178,6 @@ const ResultScreen = ({ originalPhoto, resultImage, selectedStyle, aiSelectedArt
             beforeImage={URL.createObjectURL(originalPhoto)}
             afterImage={resultImage}
           />
-          <p className="comparison-hint">
-            💡 슬라이더를 좌우로 드래그하여 원본과 비교해보세요!
-          </p>
         </div>
 
         {/* 화법 설명 Toggle */}
@@ -271,13 +272,6 @@ const ResultScreen = ({ originalPhoto, resultImage, selectedStyle, aiSelectedArt
           border-radius: 20px;
           box-shadow: 0 20px 60px rgba(0,0,0,0.3);
           margin-bottom: 1.5rem;
-        }
-
-        .comparison-hint {
-          text-align: center;
-          color: #666;
-          font-size: 0.9rem;
-          margin: 1rem 0 0 0;
         }
 
         .info-toggle {
