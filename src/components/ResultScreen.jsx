@@ -1,11 +1,126 @@
-// PicoArt v22 - ResultScreen (이중 교육 시스템)
-// 결과물: 화가/화법 세부 설명
-import React, { useState } from 'react';
+// PicoArt v23 - ResultScreen (AI 기반 2차 교육 시스템)
+// 결과물: AI가 실시간 생성하는 화가/화법 설명
+import React, { useState, useEffect } from 'react';
 import BeforeAfter from './BeforeAfter';
-import { artistTechniques, educationContent } from '../data/educationContent';
 
-const ResultScreen = ({ originalPhoto, resultImage, selectedStyle, onReset }) => {
+const ResultScreen = ({ originalPhoto, resultImage, selectedStyle, aiSelectedArtist, onReset }) => {
   const [showInfo, setShowInfo] = useState(true);
+  const [educationText, setEducationText] = useState('');
+  const [isLoadingEducation, setIsLoadingEducation] = useState(true);
+
+  // 2차 교육 생성
+  useEffect(() => {
+    generate2ndEducation();
+  }, []);
+
+  const generate2ndEducation = async () => {
+    try {
+      setIsLoadingEducation(true);
+      
+      const prompt = buildPrompt();
+      
+      // Anthropic API 호출
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 500,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+      
+      const data = await response.json();
+      const generatedText = data.content[0].text;
+      setEducationText(generatedText);
+      
+    } catch (error) {
+      console.error('2nd education generation failed:', error);
+      // Fallback 메시지
+      setEducationText(getFallbackMessage());
+    } finally {
+      setIsLoadingEducation(false);
+    }
+  };
+
+  // 카테고리별 프롬프트 생성
+  const buildPrompt = () => {
+    const category = selectedStyle.category;
+    
+    // 미술사조
+    if (category === 'impressionism' || category === 'postImpressionism' || 
+        category === 'fauvism' || category === 'expressionism' || 
+        category === 'ancient' || category === 'renaissance' || 
+        category === 'baroque' || category === 'rococo' || category === 'romanticism') {
+      return `당신은 미술사 전문가입니다.
+사용자가 선택한 미술사조는 "${selectedStyle.name}"이고, 
+당신이 선택한 화가는 "${aiSelectedArtist || selectedStyle.name}"입니다.
+
+다음 형식으로 정확히 3문장으로 작성하세요:
+
+1문장: "이 작품에는 {화가명}의 {대표 기법명} 기법이 적용되었습니다."
+2문장: "{화가명}({생몰연도})은 {국적} 출신 {화풍} 화가로, {핵심 특징}이 특징입니다."
+3문장: "대표작은 "{작품1}", "{작품2}", "{작품3}" 등이 있습니다."
+
+예시:
+이 작품에는 클로드 모네의 보색 대비와 분할 기법이 적용되었습니다.
+
+클로드 모네(1840-1926)는 프랑스 출신 인상주의 화가로, 
+빛의 순간적 변화를 포착하는 것이 특징입니다.
+
+대표작은 "수련", "인상, 해돋이", "루앙 대성당 연작" 등이 있습니다.`;
+    }
+    
+    // 거장
+    if (category === 'masters') {
+      return `당신은 미술사 전문가입니다.
+사용자가 선택한 거장은 "${selectedStyle.name}"입니다.
+
+다음 형식으로 정확히 3문장으로 작성하세요:
+
+1문장: "이 작품에는 {화가명}의 {대표 기법명} 기법이 적용되었습니다."
+2문장: "{화가명}({생몰연도})은 {국적} 출신 {화풍} 화가로, {핵심 특징}이 특징입니다."
+3문장: "대표작은 "{작품1}", "{작품2}", "{작품3}" 등이 있습니다."
+
+예시:
+이 작품에는 빈센트 반 고흐의 임파스토와 소용돌이 붓터치가 적용되었습니다.
+
+빈센트 반 고흐(1853-1890)는 네덜란드 출신 후기인상주의 화가로, 
+격렬한 감정 표현과 노란색-파란색 대비가 특징입니다.
+
+대표작은 "별이 빛나는 밤", "해바라기", "까마귀가 나는 밀밭" 등이 있습니다.`;
+    }
+    
+    // 동양화
+    if (category === 'oriental') {
+      return `당신은 동양미술사 전문가입니다.
+사용자가 선택한 국가는 "${selectedStyle.name}"이고,
+당신이 적용한 스타일은 "${aiSelectedArtist || '전통 기법'}"입니다.
+
+다음 형식으로 정확히 3문장으로 작성하세요:
+
+1문장: "이 작품에는 {국가} {스타일명}의 {특징적 기법} 기법이 적용되었습니다."
+2문장: "{국가} {스타일명}은 {시대} {계층/목적}이 즐긴 {장르}로, {핵심 특징}이 특징입니다."
+3문장: "대표 주제는 "{주제1}", "{주제2}", "{주제3}" 등이 있습니다."
+
+예시:
+이 작품에는 한국 민화의 해학적 표현과 오방색이 적용되었습니다.
+
+한국 민화는 조선시대 서민들이 즐긴 장식화로, 
+밝은 색채와 익살스러운 표현이 특징입니다.
+
+대표 주제는 "까치호랑이", "문자도", "화조도" 등이 있습니다.`;
+    }
+    
+    return '';
+  };
+
+  // Fallback 메시지
+  const getFallbackMessage = () => {
+    return `이 작품은 ${selectedStyle.name} 스타일로 변환되었습니다.`;
+  };
 
   const handleDownload = async () => {
     try {
@@ -31,7 +146,7 @@ const ResultScreen = ({ originalPhoto, resultImage, selectedStyle, onReset }) =>
       try {
         await navigator.share({
           title: 'PicoArt - AI 예술 변환',
-          text: `${getTechniqueInfo().title}로 변환한 작품`,
+          text: `${selectedStyle.name}로 변환한 작품`,
           url: window.location.href
         });
       } catch (error) {
@@ -43,48 +158,13 @@ const ResultScreen = ({ originalPhoto, resultImage, selectedStyle, onReset }) =>
     }
   };
 
-  // 결과물 화법 설명 가져오기
-  const getTechniqueInfo = () => {
-    const category = selectedStyle.category;
-    
-    // 1. 사조 탭 → 선정된 화가 화법 설명
-    if (category !== 'masters' && category !== 'oriental') {
-      return {
-        title: `${selectedStyle.artist.name}의 화법`,
-        technique: artistTechniques[selectedStyle.id] || selectedStyle.artist.features
-      };
-    }
-    
-    // 2. 거장 탭 → 화법 세부 설명
-    if (category === 'masters') {
-      return {
-        title: `${selectedStyle.artist.name}의 화법`,
-        technique: educationContent.masters[selectedStyle.id]?.technique || selectedStyle.artist.features
-      };
-    }
-    
-    // 3. 동양화 탭 → 화법 세부 설명
-    if (category === 'oriental') {
-      const styleType = selectedStyle.id.replace('-', ''); // korean, chinese, japanese
-      return {
-        title: `${selectedStyle.name} 화법`,
-        technique: educationContent.oriental[styleType]?.technique || selectedStyle.artist.features
-      };
-    }
-
-    return {
-      title: '화법 설명',
-      technique: selectedStyle.artist.features
-    };
-  };
-
   return (
     <div className="result-screen">
       <div className="result-container">
         <div className="result-header">
           <h1>✨ 완성!</h1>
           <p className="result-subtitle">
-            {selectedStyle.artist.name} ({selectedStyle.artist.lifespan}) 화풍으로 변환되었습니다
+            {selectedStyle.name} 스타일로 변환되었습니다
           </p>
         </div>
 
@@ -105,7 +185,7 @@ const ResultScreen = ({ originalPhoto, resultImage, selectedStyle, onReset }) =>
             className="toggle-button"
             onClick={() => setShowInfo(!showInfo)}
           >
-            {showInfo ? '🔽 화법 설명 숨기기' : '🔼 화법 설명 보기'}
+            {showInfo ? '🔽 작품 설명 숨기기' : '🔼 작품 설명 보기'}
           </button>
         </div>
 
@@ -115,42 +195,23 @@ const ResultScreen = ({ originalPhoto, resultImage, selectedStyle, onReset }) =>
             <div className="card-header">
               <div className="technique-icon">{selectedStyle.icon || '🎨'}</div>
               <div>
-                <h2>{getTechniqueInfo().title}</h2>
-                <p className="technique-subtitle">{selectedStyle.nameEn}</p>
+                <h2>{selectedStyle.name}</h2>
+                <p className="technique-subtitle">{aiSelectedArtist || '예술 스타일'}</p>
               </div>
             </div>
 
             <div className="card-content">
-              <div className="technique-explanation">
-                <h3>🖌️ 이 화가는 이렇게 그렸습니다</h3>
-                <p>{getTechniqueInfo().technique}</p>
-              </div>
-
-              {/* 기본 정보 */}
-              <div className="info-grid">
-                <div className="info-box">
-                  <span className="info-label">생애</span>
-                  <span className="info-text">{selectedStyle.artist.lifespan}</span>
+              {isLoadingEducation ? (
+                <div className="loading-education">
+                  <div className="spinner"></div>
+                  <p>작품 설명을 생성하고 있습니다...</p>
                 </div>
-                <div className="info-box">
-                  <span className="info-label">국적</span>
-                  <span className="info-text">{selectedStyle.artist.nationality}</span>
+              ) : (
+                <div className="technique-explanation">
+                  <h3>🖌️ 적용된 예술 기법</h3>
+                  <p style={{ whiteSpace: 'pre-line' }}>{educationText}</p>
                 </div>
-                <div className="info-box">
-                  <span className="info-label">미술사조</span>
-                  <span className="info-text">{selectedStyle.artist.movement}</span>
-                </div>
-              </div>
-
-              {/* 대표작 */}
-              <div className="info-section">
-                <h3>✨ 대표작</h3>
-                <div className="masterpieces">
-                  {selectedStyle.artist.masterpieces.map((work, idx) => (
-                    <span key={idx} className="masterpiece-tag">{work}</span>
-                  ))}
-                </div>
-              </div>
+              )}
             </div>
           </div>
         )}
@@ -288,11 +349,35 @@ const ResultScreen = ({ originalPhoto, resultImage, selectedStyle, onReset }) =>
           margin: 0.25rem 0 0 0;
         }
 
+        .loading-education {
+          text-align: center;
+          padding: 3rem 2rem;
+        }
+
+        .spinner {
+          width: 50px;
+          height: 50px;
+          border: 4px solid #f3f3f3;
+          border-top: 4px solid #667eea;
+          border-radius: 50%;
+          animation: spin 1s linear infinite;
+          margin: 0 auto 1rem auto;
+        }
+
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+
+        .loading-education p {
+          color: #666;
+          font-size: 1rem;
+        }
+
         .technique-explanation {
           background: linear-gradient(135deg, #fff5f5 0%, #ffe5e5 100%);
           padding: 1.5rem;
           border-radius: 12px;
-          margin-bottom: 1.5rem;
           border-left: 4px solid #667eea;
         }
 
@@ -307,65 +392,6 @@ const ResultScreen = ({ originalPhoto, resultImage, selectedStyle, onReset }) =>
           line-height: 1.8;
           font-size: 1rem;
           margin: 0;
-        }
-
-        .info-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-          gap: 1rem;
-          margin-bottom: 1.5rem;
-        }
-
-        .info-box {
-          background: linear-gradient(135deg, #f6f8fb 0%, #e9ecef 100%);
-          padding: 1rem;
-          border-radius: 12px;
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
-        }
-
-        .info-label {
-          font-size: 0.75rem;
-          color: #999;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          font-weight: 600;
-        }
-
-        .info-text {
-          color: #333;
-          font-weight: 600;
-          font-size: 1rem;
-        }
-
-        .info-section {
-          margin-bottom: 1.5rem;
-        }
-
-        .info-section:last-child {
-          margin-bottom: 0;
-        }
-
-        .info-section h3 {
-          color: #667eea;
-          font-size: 1.1rem;
-          margin: 0 0 0.75rem 0;
-        }
-
-        .masterpieces {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.75rem;
-        }
-
-        .masterpiece-tag {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          color: white;
-          padding: 0.5rem 1rem;
-          border-radius: 20px;
-          font-size: 0.9rem;
-          font-weight: 500;
         }
 
         .action-buttons {
@@ -454,10 +480,6 @@ const ResultScreen = ({ originalPhoto, resultImage, selectedStyle, onReset }) =>
 
           .card-header h2 {
             font-size: 1.5rem;
-          }
-
-          .info-grid {
-            grid-template-columns: 1fr;
           }
 
           .action-buttons {
