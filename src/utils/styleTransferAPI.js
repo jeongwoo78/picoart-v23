@@ -1,4 +1,4 @@
-// PicoArt v22 - Style Transfer API (하이브리드 모델: FLUX + SDXL)
+// PicoArt v23 - Style Transfer API (FLUX Depth + AI Selection)
 import { MODEL_CONFIG } from './modelConfig';
 
 // File to Base64 conversion
@@ -75,11 +75,11 @@ const callFluxAPI = async (photoBase64, stylePrompt, onProgress) => {
   return response.json();
 };
 
-// SDXL API call
-const callSDXLAPI = async (photoBase64, selectedStyle, onProgress) => {
+// FLUX Depth + AI Selection API call
+const callFluxWithAI = async (photoBase64, selectedStyle, onProgress) => {
   if (onProgress) onProgress('AI 자동 화가 선택 시작...');
 
-  const response = await fetch('/api/sdxl-transfer', {
+  const response = await fetch('/api/flux-transfer', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -91,7 +91,7 @@ const callSDXLAPI = async (photoBase64, selectedStyle, onProgress) => {
   });
 
   if (!response.ok) {
-    throw new Error(`SDXL API error: ${response.status}`);
+    throw new Error(`FLUX API error: ${response.status}`);
   }
 
   return response.json();
@@ -151,7 +151,7 @@ export const processStyleTransfer = async (photoFile, selectedStyle, apiKey, onP
     if (modelConfig.model.includes('flux')) {
       prediction = await callFluxAPI(photoBase64, selectedStyle.prompt, onProgress);
     } else {
-      prediction = await callSDXLAPI(photoBase64, selectedStyle, onProgress);
+      prediction = await callFluxWithAI(photoBase64, selectedStyle, onProgress);
     }
 
     // 4. Poll for result
