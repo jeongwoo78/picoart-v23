@@ -8,6 +8,7 @@ const StyleSelection = ({ onSelect }) => {
 
   // 스타일 카테고리 정의
   const styleCategories = {
+    // 미술사조
     ancient: { name: '고대 미술', period: 'BC 800 - AD 500' },
     byzantineIslamic: { name: '비잔틴·이슬람', period: '4-14세기' },
     renaissance: { name: '르네상스', period: '14-16세기' },
@@ -18,7 +19,11 @@ const StyleSelection = ({ onSelect }) => {
     postImpressionism: { name: '후기인상주의', period: '1880-1900년대' },
     fauvism: { name: '야수파', period: '20세기 초' },
     expressionism: { name: '표현주의', period: '20세기 초' },
-    masters: { name: '거장 컬렉션', period: '시대를 초월한 거장들' },
+    
+    // 거장 (대 카테고리와 소 카테고리 이름 통일)
+    masters: { name: '거장', period: '시대를 초월한 거장들' },
+    
+    // 동양화 (대 카테고리와 소 카테고리 이름 통일)
     oriental: { name: '동양화', period: '한·중·일 전통' }
   };
 
