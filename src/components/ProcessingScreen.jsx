@@ -89,11 +89,22 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete }) => {
       return educationContent.movements[category];
     }
     
-    // 2. 거장 탭 → 거장 소개 (기존 artist.intro 사용)
+    // 2. 거장 탭 → 거장 소개 (educationContent에서 가져오기)
     if (category === 'masters') {
+      const masterId = selectedStyle.id.replace('-master', ''); // 'vangogh-master' → 'vangogh'
+      const masterInfo = educationContent.masters[masterId];
+      
+      if (masterInfo) {
+        return {
+          title: masterInfo.title,
+          desc: masterInfo.content
+        };
+      }
+      
+      // Fallback
       return {
-        title: selectedStyle.artist.name,
-        desc: selectedStyle.artist.intro
+        title: selectedStyle.name || '거장',
+        desc: '선택하신 거장의 화풍으로 변환합니다.'
       };
     }
     
