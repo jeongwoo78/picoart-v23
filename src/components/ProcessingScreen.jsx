@@ -108,22 +108,22 @@ const ProcessingScreen = ({ photo, selectedStyle, onComplete }) => {
       };
     }
     
-    // 3. 동양화 탭 → 동양화 전통 설명
+    // 3. 동양화 탭 → 동양화 전통 설명 (educationContent.oriental에서 가져오기)
     if (category === 'oriental') {
-      const orientalTitles = {
-        korean: '한국 전통 회화',
-        chinese: '중국 수묵화',
-        japanese: '일본 우키요에'
-      };
-      const orientalDescs = {
-        korean: '한국 전통화는 먹과 채색으로 자연의 정신을 담아냅니다. 여백의 미를 중시하며, 선비정신과 자연 사랑이 담긴 산수화, 화조화가 발전했습니다.',
-        chinese: '중국 수묵화는 먹의 농담만으로 자연과 정신세계를 표현합니다. 기운생동(氣韻生動)을 최고로 여기며, 문인화 전통이 깊습니다.',
-        japanese: '일본 우키요에는 에도시대 서민 문화를 담은 목판화입니다. "떠도는 세상의 그림"이란 뜻으로, 대담한 구도와 선명한 색채가 특징입니다.'
-      };
-      const styleType = selectedStyle.id.replace('-', ''); // korean, chinese, japanese
+      const styleId = selectedStyle.id; // 'korean', 'chinese', 'japanese'
+      const orientalInfo = educationContent.oriental[styleId];
+      
+      if (orientalInfo) {
+        return {
+          title: orientalInfo.title,
+          desc: orientalInfo.desc
+        };
+      }
+      
+      // Fallback (혹시 못 찾을 경우)
       return {
-        title: orientalTitles[styleType] || '동양화',
-        desc: orientalDescs[styleType] || '동양의 전통적인 회화 기법입니다.'
+        title: selectedStyle.name || '동양화',
+        desc: '선택하신 동양화 스타일로 변환합니다.'
       };
     }
 

@@ -50,9 +50,9 @@ const StyleSelection = ({ onSelect }) => {
     { id: 'dali-master', name: '살바도르 달리', nameEn: 'Salvador Dalí', category: 'masters', icon: '⏰', description: '초현실주의의 거장' },
     
     // 동양화
-    { id: 'korean', name: '한국 전통미술', nameEn: 'Korean Art', category: 'oriental', icon: '🎎', description: '여백의 미와 절제미' },
-    { id: 'chinese', name: '중국 전통미술', nameEn: 'Chinese Art', category: 'oriental', icon: '🐉', description: '기운생동의 수묵화' },
-    { id: 'japanese', name: '일본 전통미술', nameEn: 'Japanese Art', category: 'oriental', icon: '🗾', description: '섬세한 관찰과 대담한 생략' }
+    { id: 'korean', name: '한국 전통 회화', nameEn: 'Korean Art', category: 'oriental', icon: '🎎', description: '여백의 미와 절제미' },
+    { id: 'chinese', name: '중국 전통 회화', nameEn: 'Chinese Art', category: 'oriental', icon: '🐉', description: '기운생동의 수묵화' },
+    { id: 'japanese', name: '일본 전통 회화', nameEn: 'Japanese Art', category: 'oriental', icon: '🗾', description: '섬세한 관찰과 대담한 생략' }
   ];
 
   // 대 카테고리 정의
