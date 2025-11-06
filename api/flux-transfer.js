@@ -161,13 +161,16 @@ const fallbackPrompts = {
 };
 
 // AI 화가 자동 선택 (타임아웃 포함)
-async function selectArtistWithAI(imageBase64, categoryName, categoryType, timeoutMs = 8000) {
+async function selectArtistWithAI(imageBase64, selectedStyle, timeoutMs = 8000) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
   
   try {
     // 모든 카테고리 동일 로직: AI가 사진 분석 후 최적 세부 스타일 선택
     let promptText;
+    
+    const categoryName = selectedStyle.name;
+    const categoryType = selectedStyle.category;
     
     if (categoryType === 'masters') {
       // 거장: 사진에 가장 잘 맞는 시기/스타일 선택
@@ -194,25 +197,46 @@ Return ONLY valid JSON (no markdown):
 Keep it concise and accurate.`;
       
     } else if (categoryType === 'oriental') {
-      // 동양화: 사진에 가장 잘 맞는 화풍 선택
-      promptText = `Analyze this photo and select the BEST specific style from ${categoryName} traditional art that matches this photo.
+      // 동양화: 국가별로 명확하게 구분
+      const countryMap = {
+        'korean': 'Korean',
+        'chinese': 'Chinese',
+        'japanese': 'Japanese'
+      };
+      
+      const countryEn = countryMap[selectedStyle.id] || 'Korean';
+      
+      // 국가별 스타일 목록 명시
+      const styleOptions = {
+        'korean': 'Korean minhwa folk painting, Korean sumukhwa ink painting, or Korean dancheong decorative art',
+        'chinese': 'Chinese ink wash painting (shuimohua), Chinese gongbi meticulous painting, or Chinese shanshui landscape painting',
+        'japanese': 'Japanese ukiyo-e woodblock print, Japanese sumi-e ink painting, or Japanese rinpa decorative art'
+      };
+      
+      const availableStyles = styleOptions[selectedStyle.id] || styleOptions['korean'];
+      
+      promptText = `You are analyzing a photo to transform it into ${countryEn} traditional art style.
 
-${categoryName} traditional art has various styles (folk painting, ink wash, decorative art, etc.). Analyze the photo and select which style would transform this photo most beautifully.
+CRITICAL: You MUST select a style ONLY from ${countryEn} traditional art. Do NOT mix with other countries.
+
+Available ${countryEn} styles: ${availableStyles}
+
+Analyze this photo and select the BEST specific style from ${countryEn} traditional art that matches this photo.
 
 Instructions:
 1. Analyze the photo: subject, mood, colors, composition, atmosphere
-2. Consider various ${categoryName} traditional art styles
-3. Match the photo's characteristics to the MOST SUITABLE style
-4. Generate a detailed FLUX prompt using that specific style's characteristics
+2. Select ONLY from ${countryEn} traditional art styles listed above
+3. Match the photo to the MOST SUITABLE ${countryEn} style
+4. Generate a detailed FLUX prompt using that specific ${countryEn} style's characteristics
 5. IMPORTANT: Preserve the original subject
 
 Return ONLY valid JSON (no markdown):
 {
   "analysis": "brief photo analysis",
-  "selected_artist": "${categoryName} traditional art",
-  "selected_style": "specific style name",
-  "reason": "why this style matches this photo",
-  "prompt": "${categoryName} traditional art in [specific style], [style's characteristics], depicting the subject while preserving original features"
+  "selected_artist": "${countryEn} traditional art",
+  "selected_style": "specific style name from ${countryEn} (e.g., minhwa, sumukhwa, dancheong for Korean)",
+  "reason": "why this ${countryEn} style matches this photo",
+  "prompt": "${countryEn} traditional art in [specific style], [that style's distinctive characteristics from ${countryEn}], depicting the subject while preserving original features"
 }
 
 Keep it concise and accurate.`;
@@ -362,8 +386,7 @@ export default async function handler(req, res) {
       
       const aiResult = await selectArtistWithAI(
         image, 
-        selectedStyle.name,
-        selectedStyle.category,  // ← category 타입 추가!
+        selectedStyle,  // ← selectedStyle 객체 전체 전달
         8000 // 8초 타임아웃
       );
       
