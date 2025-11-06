@@ -161,11 +161,83 @@ const fallbackPrompts = {
 };
 
 // AI 화가 자동 선택 (타임아웃 포함)
-async function selectArtistWithAI(imageBase64, categoryName, timeoutMs = 8000) {
+async function selectArtistWithAI(imageBase64, categoryName, categoryType, timeoutMs = 8000) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
   
   try {
+    // 모든 카테고리 동일 로직: AI가 사진 분석 후 최적 세부 스타일 선택
+    let promptText;
+    
+    if (categoryType === 'masters') {
+      // 거장: 사진에 가장 잘 맞는 시기/스타일 선택
+      promptText = `Analyze this photo and select the BEST specific period or style from ${categoryName}'s works that matches this photo.
+
+${categoryName} created works in various periods and styles. Analyze the photo and select which period/style would transform this photo most beautifully.
+
+Instructions:
+1. Analyze the photo: subject, mood, colors, composition, lighting, atmosphere
+2. Consider ${categoryName}'s different periods and styles (early works, peak period, different techniques)
+3. Match the photo's characteristics to the MOST SUITABLE period/style from ${categoryName}'s career
+4. Generate a detailed FLUX prompt using that specific period's distinctive characteristics
+5. IMPORTANT: Preserve the original subject - if it's a baby, keep it as a baby; if elderly, keep elderly
+
+Return ONLY valid JSON (no markdown):
+{
+  "analysis": "brief photo analysis (mood, colors, subject)",
+  "selected_artist": "${categoryName}",
+  "selected_period": "specific period or style name (e.g. Blue Period, Arles Period, Golden Period)",
+  "reason": "why THIS specific period of ${categoryName} matches this photo perfectly",
+  "prompt": "painting by ${categoryName} in [specific period], [that period's distinctive techniques and colors], depicting the subject while preserving original features and age"
+}
+
+Keep it concise and accurate.`;
+      
+    } else if (categoryType === 'oriental') {
+      // 동양화: 사진에 가장 잘 맞는 화풍 선택
+      promptText = `Analyze this photo and select the BEST specific style from ${categoryName} traditional art that matches this photo.
+
+${categoryName} traditional art has various styles (folk painting, ink wash, decorative art, etc.). Analyze the photo and select which style would transform this photo most beautifully.
+
+Instructions:
+1. Analyze the photo: subject, mood, colors, composition, atmosphere
+2. Consider various ${categoryName} traditional art styles
+3. Match the photo's characteristics to the MOST SUITABLE style
+4. Generate a detailed FLUX prompt using that specific style's characteristics
+5. IMPORTANT: Preserve the original subject
+
+Return ONLY valid JSON (no markdown):
+{
+  "analysis": "brief photo analysis",
+  "selected_artist": "${categoryName} traditional art",
+  "selected_style": "specific style name",
+  "reason": "why this style matches this photo",
+  "prompt": "${categoryName} traditional art in [specific style], [style's characteristics], depicting the subject while preserving original features"
+}
+
+Keep it concise and accurate.`;
+      
+    } else {
+      // 미술사조: 사조 내 화가 중 최적 선택
+      promptText = `Analyze this photo and select the BEST artist from ${categoryName} period/style to transform it.
+
+Instructions:
+1. Analyze: subject, age, mood, composition, lighting
+2. Select the MOST SUITABLE ${categoryName} artist for THIS specific photo
+3. Generate a detailed prompt for FLUX Depth in that artist's style
+4. IMPORTANT: Preserve the original subject - if it's a baby, keep it as a baby; if elderly, keep elderly
+
+Return ONLY valid JSON (no markdown):
+{
+  "analysis": "brief photo description",
+  "selected_artist": "Artist Full Name",
+  "reason": "why this artist fits this photo",
+  "prompt": "painting by [Artist], [artist's technique], [artist's characteristics], depicting the subject while preserving original features and age"
+}
+
+Keep it concise and accurate.`;
+    }
+    
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -190,23 +262,7 @@ async function selectArtistWithAI(imageBase64, categoryName, timeoutMs = 8000) {
             },
             {
               type: 'text',
-              text: `Analyze this photo and select the BEST artist from ${categoryName} period/style to transform it.
-
-Instructions:
-1. Analyze: subject, age, mood, composition, lighting
-2. Select the MOST SUITABLE ${categoryName} artist for THIS specific photo
-3. Generate a detailed prompt for FLUX Depth in that artist's style
-4. IMPORTANT: Preserve the original subject - if it's a baby, keep it as a baby; if elderly, keep elderly
-
-Return ONLY valid JSON (no markdown):
-{
-  "analysis": "brief photo description",
-  "selected_artist": "Artist Full Name",
-  "reason": "why this artist fits this photo",
-  "prompt": "painting by [Artist], [artist's technique], [artist's characteristics], depicting the subject while preserving original features and age"
-}
-
-Keep it concise and accurate.`
+              text: promptText
             }
           ]
         }]
@@ -307,6 +363,7 @@ export default async function handler(req, res) {
       const aiResult = await selectArtistWithAI(
         image, 
         selectedStyle.name,
+        selectedStyle.category,  // ← category 타입 추가!
         8000 // 8초 타임아웃
       );
       
@@ -323,13 +380,30 @@ export default async function handler(req, res) {
       } else {
         // AI 실패 → Fallback
         console.log('⚠️ AI failed, using fallback');
-        console.log('selectedStyle.category:', selectedStyle.category);
-        const fallback = fallbackPrompts[selectedStyle.category];
+        
+        // 거장/동양화는 id에서 키 추출, 미술사조는 category 사용
+        let fallbackKey = selectedStyle.category;
+        
+        if (selectedStyle.category === 'masters') {
+          // 'picasso-master' → 'picasso'
+          fallbackKey = selectedStyle.id.replace('-master', '');
+          
+          // 특수 케이스: vangogh → van_gogh
+          if (fallbackKey === 'vangogh') {
+            fallbackKey = 'van_gogh';
+          }
+        } else if (selectedStyle.category === 'oriental') {
+          // 'korean' → 'korean' (그대로 사용)
+          fallbackKey = selectedStyle.id;
+        }
+        
+        console.log('Using fallback key:', fallbackKey);
+        const fallback = fallbackPrompts[fallbackKey];
         
         if (!fallback) {
-          console.error('ERROR: No fallback found for category:', selectedStyle.category);
+          console.error('ERROR: No fallback found for key:', fallbackKey);
           console.error('Available categories:', Object.keys(fallbackPrompts));
-          throw new Error(`No fallback prompt for category: ${selectedStyle.category}`);
+          throw new Error(`No fallback prompt for: ${fallbackKey}`);
         }
         
         finalPrompt = fallback.prompt;
@@ -342,13 +416,30 @@ export default async function handler(req, res) {
     } else {
       // ANTHROPIC_API_KEY 없음 → Fallback
       console.log('ℹ️ No AI key, using fallback');
-      console.log('selectedStyle.category:', selectedStyle.category);
-      const fallback = fallbackPrompts[selectedStyle.category];
+      
+      // 거장/동양화는 id에서 키 추출, 미술사조는 category 사용
+      let fallbackKey = selectedStyle.category;
+      
+      if (selectedStyle.category === 'masters') {
+        // 'picasso-master' → 'picasso'
+        fallbackKey = selectedStyle.id.replace('-master', '');
+        
+        // 특수 케이스: vangogh → van_gogh
+        if (fallbackKey === 'vangogh') {
+          fallbackKey = 'van_gogh';
+        }
+      } else if (selectedStyle.category === 'oriental') {
+        // 'korean' → 'korean' (그대로 사용)
+        fallbackKey = selectedStyle.id;
+      }
+      
+      console.log('Using fallback key:', fallbackKey);
+      const fallback = fallbackPrompts[fallbackKey];
       
       if (!fallback) {
-        console.error('ERROR: No fallback found for category:', selectedStyle.category);
+        console.error('ERROR: No fallback found for key:', fallbackKey);
         console.error('Available categories:', Object.keys(fallbackPrompts));
-        throw new Error(`No fallback prompt for category: ${selectedStyle.category}`);
+        throw new Error(`No fallback prompt for: ${fallbackKey}`);
       }
       
       finalPrompt = fallback.prompt;
