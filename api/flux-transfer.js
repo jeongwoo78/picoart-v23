@@ -90,17 +90,17 @@ const fallbackPrompts = {
   
   korean: {
     name: '한국',
-    prompt: 'Traditional Korean art style with vibrant colors and folk art aesthetic. Use bright primary colors (red, blue, yellow, green) in the Korean obangsaek palette. Apply bold black outlines and flat decorative composition similar to Korean minhwa folk paintings. Include traditional Korean artistic elements and cheerful optimistic mood. Paint in authentic Korean traditional art masterpiece quality with distinct Korean cultural identity.'
+    prompt: 'KOREAN TRADITIONAL FOLK ART STYLE ONLY. Transform this image into authentic Korean Minhwa folk painting with these MANDATORY characteristics: USE ONLY bright primary colors from Korean obangsaek palette (vibrant red, bright blue, sunny yellow, fresh green). MUST have thick bold black outlines around all shapes. MUST use completely flat, decorative composition with NO shading or 3D effects. Include traditional Korean folk art motifs like magpies, tigers, flowers, or auspicious symbols. Paint in cheerful, optimistic mood with naive, playful aesthetic. CRITICAL: This MUST look distinctly KOREAN, NOT Chinese or Japanese. NO Chinese characters or calligraphy. NO Japanese ukiyo-e style. Pure Korean folk art aesthetic with bold colors and happy spirit.'
   },
   
   chinese: {
     name: '중국',
-    prompt: 'Traditional Chinese ink wash painting (shuimohua) style with monochrome black ink and soft flowing brushstrokes. Use minimalist composition with elegant empty space. Apply traditional Chinese landscape painting techniques with misty mountains and contemplative atmosphere. Paint in authentic Chinese literati painting masterpiece quality with distinct Chinese artistic philosophy.'
+    prompt: 'CHINESE TRADITIONAL INK WASH PAINTING STYLE ONLY. Transform this image into authentic Chinese shuimohua with these MANDATORY characteristics: USE ONLY monochrome black ink with varying tones from deep black to light grey. MUST have soft, flowing brushstrokes with ink wash technique. MUST use minimalist composition with elegant empty space (留白). Include misty mountains, pine trees, or contemplative landscape elements. Paint in serene, meditative atmosphere with literati painting aesthetic. CRITICAL: This MUST look distinctly CHINESE, NOT Korean or Japanese. Traditional Chinese ink painting philosophy and technique only.'
   },
   
   japanese: {
     name: '일본',
-    prompt: 'Traditional Japanese ukiyo-e woodblock print style with flat areas of bold color and strong clear black outlines. Use decorative patterns and stylized simplified forms. Apply traditional Japanese aesthetic with elegant composition. Paint in authentic Japanese ukiyo-e masterpiece quality with distinct Japanese artistic tradition.'
+    prompt: 'JAPANESE TRADITIONAL UKIYO-E WOODBLOCK PRINT STYLE ONLY. Transform this image into authentic Japanese ukiyo-e with these MANDATORY characteristics: USE flat areas of bold, solid colors. MUST have strong, clear black outlines (kento lines). MUST use completely flat, two-dimensional composition with NO shading. Include decorative patterns and stylized, simplified forms. Paint in elegant, refined Japanese aesthetic with woodblock print technique. CRITICAL: This MUST look distinctly JAPANESE, NOT Korean or Chinese. Traditional Japanese ukiyo-e style only with flat colors and clear outlines.'
   },
   
   // 하위 스타일들 (AI 선택용)
