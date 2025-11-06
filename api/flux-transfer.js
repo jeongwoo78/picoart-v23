@@ -90,17 +90,17 @@ const fallbackPrompts = {
   
   korean: {
     name: '한국',
-    prompt: 'Korean traditional art style, vibrant folk painting or elegant ink wash or decorative dancheong, Korean aesthetic with obangsaek colors, traditional Korean paper texture'
+    prompt: 'Traditional Korean art style with vibrant colors and folk art aesthetic. Use bright primary colors (red, blue, yellow, green) in the Korean obangsaek palette. Apply bold black outlines and flat decorative composition similar to Korean minhwa folk paintings. Include traditional Korean artistic elements and cheerful optimistic mood. Paint in authentic Korean traditional art masterpiece quality with distinct Korean cultural identity.'
   },
   
   chinese: {
     name: '중국',
-    prompt: 'Chinese traditional art style, ink wash painting or meticulous gongbi or majestic landscape, Chinese aesthetic with mineral pigments, elegant brushwork'
+    prompt: 'Traditional Chinese ink wash painting (shuimohua) style with monochrome black ink and soft flowing brushstrokes. Use minimalist composition with elegant empty space. Apply traditional Chinese landscape painting techniques with misty mountains and contemplative atmosphere. Paint in authentic Chinese literati painting masterpiece quality with distinct Chinese artistic philosophy.'
   },
   
   japanese: {
     name: '일본',
-    prompt: 'Japanese traditional art style, ukiyo-e woodblock print or zen ink painting or rinpa decorative art, Japanese aesthetic with elegant simplicity'
+    prompt: 'Traditional Japanese ukiyo-e woodblock print style with flat areas of bold color and strong clear black outlines. Use decorative patterns and stylized simplified forms. Apply traditional Japanese aesthetic with elegant composition. Paint in authentic Japanese ukiyo-e masterpiece quality with distinct Japanese artistic tradition.'
   },
   
   // 하위 스타일들 (AI 선택용)
@@ -207,37 +207,46 @@ Keep it concise and accurate.`;
       const countryEn = countryMap[selectedStyle.id] || 'Korean';
       
       // 국가별 스타일 목록 명시
-      const styleOptions = {
-        'korean': 'Korean minhwa folk painting, Korean sumukhwa ink painting, or Korean dancheong decorative art',
-        'chinese': 'Chinese ink wash painting (shuimohua), Chinese gongbi meticulous painting, or Chinese shanshui landscape painting',
-        'japanese': 'Japanese ukiyo-e woodblock print, Japanese sumi-e ink painting, or Japanese rinpa decorative art'
+      const styleExamples = {
+        'korean': `Example Korean prompts:
+- "Korean Minhwa folk painting style, bright vibrant colors (red, blue, yellow), bold dark outlines, flat decorative composition, auspicious symbols, cheerful mood"
+- "Korean literati ink painting style, restrained elegant brushwork, subtle ink gradations, Korean mountains and pine trees, Joseon scholar painting quality"
+- "Korean dancheong decorative painting, vibrant five traditional colors, symmetrical geometric patterns, ornate temple decoration, lotus and cloud motifs"`,
+        'chinese': `Example Chinese prompts:
+- "Chinese ink wash painting (Shuimohua), monochrome black ink, soft flowing brushstrokes, minimalist composition, elegant empty space, contemplative atmosphere"
+- "Chinese gongbi meticulous painting, extremely fine detailed brushwork, delicate precise lines, rich mineral pigments, birds and flowers, imperial court quality"
+- "Chinese landscape painting (shanshui), majestic towering mountains, misty atmosphere, blue-green mineral pigments, Song-Ming dynasty quality"`,
+        'japanese': `Example Japanese prompts:
+- "Japanese Ukiyo-e woodblock print style, flat areas of bold color, strong clear outlines, decorative patterns, stylized simplified forms"
+- "Japanese sumi-e ink painting, Zen Buddhist aesthetic, minimalist brushwork, spontaneous decisive strokes, wabi-sabi beauty"
+- "Japanese Rinpa school decorative painting, luxurious gold and silver leaf backgrounds, elegant curved flowing forms, stylized nature motifs"`
       };
       
-      const availableStyles = styleOptions[selectedStyle.id] || styleOptions['korean'];
+      const examples = styleExamples[selectedStyle.id] || styleExamples['korean'];
       
       promptText = `You are analyzing a photo to transform it into ${countryEn} traditional art style.
 
-CRITICAL: You MUST select a style ONLY from ${countryEn} traditional art. Do NOT mix with other countries.
+CRITICAL RULES:
+1. You MUST select a style ONLY from ${countryEn} traditional art
+2. Do NOT mix elements from Chinese, Korean, or Japanese art
+3. Your FLUX prompt MUST start with "${countryEn}" explicitly
+4. Your FLUX prompt MUST include specific ${countryEn} techniques and aesthetics
+5. DO NOT use generic "East Asian" or "Oriental" terms
 
-Available ${countryEn} styles: ${availableStyles}
+${examples}
 
-Analyze this photo and select the BEST specific style from ${countryEn} traditional art that matches this photo.
-
-Instructions:
-1. Analyze the photo: subject, mood, colors, composition, atmosphere
-2. Select ONLY from ${countryEn} traditional art styles listed above
-3. Match the photo to the MOST SUITABLE ${countryEn} style
-4. Generate a detailed FLUX prompt using that specific ${countryEn} style's characteristics
-5. IMPORTANT: Preserve the original subject
+Analyze this photo and select the BEST specific ${countryEn} traditional art style.
 
 Return ONLY valid JSON (no markdown):
 {
-  "analysis": "brief photo analysis",
+  "analysis": "brief photo analysis (1 sentence)",
   "selected_artist": "${countryEn} traditional art",
-  "selected_style": "specific style name from ${countryEn} (e.g., minhwa, sumukhwa, dancheong for Korean)",
-  "reason": "why this ${countryEn} style matches this photo",
-  "prompt": "${countryEn} traditional art in [specific style], [that style's distinctive characteristics from ${countryEn}], depicting the subject while preserving original features"
+  "selected_style": "specific ${countryEn} style (e.g., minhwa, sumukhwa, dancheong, shuimohua, gongbi, shanshui, ukiyo-e, sumi-e, rinpa)",
+  "reason": "why this ${countryEn} style matches (1 sentence)",
+  "prompt": "Your FLUX prompt MUST follow this format: '${countryEn} [specific style name] style, [that style's distinctive characteristics], [colors/techniques specific to ${countryEn}], [mood/aesthetic specific to ${countryEn}], depicting the subject while preserving original features'"
 }
+
+CRITICAL: The prompt field must be a complete FLUX prompt that clearly specifies ${countryEn} art characteristics, not a generic description!
 
 Keep it concise and accurate.`;
       
