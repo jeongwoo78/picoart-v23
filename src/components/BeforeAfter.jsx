@@ -1,4 +1,4 @@
-// PicoArt v23 - BeforeAfter Vertical Layout
+// PicoArt v25 - BeforeAfter Vertical Layout
 import React from 'react';
 
 const BeforeAfter = ({ beforeImage, afterImage, className = '' }) => {

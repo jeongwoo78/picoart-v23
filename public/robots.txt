@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://picoart.vercel.app/sitemap.xml

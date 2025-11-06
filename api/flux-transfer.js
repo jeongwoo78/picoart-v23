@@ -1,5 +1,5 @@
-// PicoArt v23 - FLUX Depth + 하이브리드 화가 선택 시스템
-// AI 자동 선택 (95%) + Fallback 안전망 (5%)
+// PicoArt v25 - FLUX Depth + 동양화 단순화
+// 한국(민화), 일본(우키요에) 고정 / 중국만 AI 선택 (수묵화/공필화)
 
 // Fallback 프롬프트 (AI 실패시 사용)
 const fallbackPrompts = {
@@ -88,65 +88,25 @@ const fallbackPrompts = {
     prompt: 'Surrealist painting by Salvador Dalí, dreamlike hyperrealistic details, melting distorted forms, bizarre juxtapositions, subconscious imagery, precise meticulous technique'
   },
   
+  // 동양화 - 단순화된 고정 스타일
   korean: {
-    name: '한국',
-    prompt: 'KOREAN TRADITIONAL FOLK ART STYLE ONLY. Transform this image into authentic Korean Minhwa folk painting with these MANDATORY characteristics: USE ONLY bright primary colors from Korean obangsaek palette (vibrant red, bright blue, sunny yellow, fresh green). MUST have thick bold black outlines around all shapes. MUST use completely flat, decorative composition with NO shading or 3D effects. Include traditional Korean folk art motifs like magpies, tigers, flowers, or auspicious symbols. Paint in cheerful, optimistic mood with naive, playful aesthetic. CRITICAL: This MUST look distinctly KOREAN, NOT Chinese or Japanese. NO Chinese characters or calligraphy. NO Japanese ukiyo-e style. Pure Korean folk art aesthetic with bold colors and happy spirit.'
-  },
-  
-  chinese: {
-    name: '중국',
-    prompt: 'CHINESE TRADITIONAL INK WASH PAINTING STYLE ONLY. Transform this image into authentic Chinese shuimohua with these MANDATORY characteristics: USE ONLY monochrome black ink with varying tones from deep black to light grey. MUST have soft, flowing brushstrokes with ink wash technique. MUST use minimalist composition with elegant empty space (留白). Include misty mountains, pine trees, or contemplative landscape elements. Paint in serene, meditative atmosphere with literati painting aesthetic. CRITICAL: This MUST look distinctly CHINESE, NOT Korean or Japanese. Traditional Chinese ink painting philosophy and technique only.'
-  },
-  
-  japanese: {
-    name: '일본',
-    prompt: 'JAPANESE TRADITIONAL UKIYO-E WOODBLOCK PRINT STYLE ONLY. Transform this image into authentic Japanese ukiyo-e with these MANDATORY characteristics: USE flat areas of bold, solid colors. MUST have strong, clear black outlines (kento lines). MUST use completely flat, two-dimensional composition with NO shading. Include decorative patterns and stylized, simplified forms. Paint in elegant, refined Japanese aesthetic with woodblock print technique. CRITICAL: This MUST look distinctly JAPANESE, NOT Korean or Chinese. Traditional Japanese ukiyo-e style only with flat colors and clear outlines.'
-  },
-  
-  // 하위 스타일들 (AI 선택용)
-  korean_minhwa: {
     name: '한국 민화',
-    prompt: 'Korean Minhwa folk painting style, bright vibrant colors, bold dark outlines, flat decorative composition, auspicious symbolic motifs, cheerful optimistic mood, traditional Korean aesthetic'
-  },
-  
-  korean_sumukhwa: {
-    name: '한국 수묵화',
-    prompt: 'Korean literati ink painting style, restrained elegant brushwork, subtle ink gradations, scholarly refinement, Korean mountains and pine trees, modest understated beauty, painted in Joseon scholar painting masterpiece quality'
-  },
-  
-  korean_dancheong: {
-    name: '한국 단청',
-    prompt: 'Korean dancheong decorative painting style, vibrant five traditional colors, symmetrical geometric patterns, ornate Buddhist temple decoration, intricate lotus and cloud motifs, brilliant saturated colors with gold accents'
+    prompt: 'Korean Minhwa folk painting style with bright vibrant colors from obangsaek palette (red, blue, yellow, green), thick bold black outlines around all shapes, completely flat decorative composition, traditional Korean folk motifs like magpies or tigers or flowers, cheerful optimistic mood, naive playful aesthetic, painted in authentic Korean minhwa masterpiece quality'
   },
   
   chinese_ink: {
     name: '중국 수묵화',
-    prompt: 'Chinese ink wash painting (Shuimohua) style, monochrome black ink tones, soft flowing brushstrokes, minimalist composition, elegant empty space (留白), contemplative serene atmosphere, traditional East Asian aesthetic'
+    prompt: 'Chinese ink wash painting (Shuimohua) style with monochrome black ink gradations from deep black to light grey, soft flowing brushstrokes, minimalist composition with elegant empty space, misty mountains or pine trees, serene meditative atmosphere, painted in authentic Chinese literati painting masterpiece quality'
   },
   
   chinese_gongbi: {
     name: '중국 공필화',
-    prompt: 'Chinese gongbi meticulous painting style, extremely fine detailed brushwork, delicate precise lines, rich mineral pigments, birds and flowers, brilliant colors with intricate patterns, painted in imperial court gongbi masterpiece quality'
+    prompt: 'Chinese gongbi meticulous painting style with extremely fine detailed brushwork, delicate precise lines, rich mineral pigments, brilliant colors, birds and flowers subjects, ornate decorative patterns, painted in authentic Chinese imperial court gongbi masterpiece quality'
   },
   
-  chinese_landscape: {
-    name: '중국 산수화',
-    prompt: 'Chinese landscape painting (shanshui) style, majestic towering mountains with misty atmosphere, blue-green mineral pigments, cascading waterfalls and winding rivers, painted in Song-Ming dynasty shanshui masterpiece quality'
-  },
-  
-  japanese_ukiyoe: {
+  japanese: {
     name: '일본 우키요에',
-    prompt: 'Japanese Ukiyo-e woodblock print style, flat areas of bold color, strong clear outlines, decorative patterns, stylized simplified forms, traditional Japanese aesthetic'
-  },
-  
-  japanese_sumi_e: {
-    name: '일본 수묵화',
-    prompt: 'Japanese sumi-e ink painting style, Zen Buddhist aesthetic with minimalist brushwork, spontaneous decisive strokes, profound simplicity and emptiness, wabi-sabi beauty, meditative atmosphere'
-  },
-  
-  japanese_rinpa: {
-    name: '일본 린파',
-    prompt: 'Japanese Rinpa school decorative painting style, luxurious gold and silver leaf backgrounds, elegant curved flowing forms, stylized nature motifs, flat bold colors, aristocratic refined beauty'
+    prompt: 'Japanese Ukiyo-e woodblock print style with flat areas of bold solid colors, strong clear black outlines, completely flat two-dimensional composition, decorative patterns, stylized simplified forms, elegant refined Japanese aesthetic, painted in authentic Japanese ukiyo-e masterpiece quality'
   },
   
   masters: {
@@ -197,58 +157,60 @@ Return ONLY valid JSON (no markdown):
 Keep it concise and accurate.`;
       
     } else if (categoryType === 'oriental') {
-      // 동양화: 국가별로 명확하게 구분
-      const countryMap = {
-        'korean': 'Korean',
-        'chinese': 'Chinese',
-        'japanese': 'Japanese'
-      };
+      // 동양화: 한국/일본 고정, 중국만 AI 선택
+      const styleId = selectedStyle.id;
       
-      const countryEn = countryMap[selectedStyle.id] || 'Korean';
+      if (styleId === 'korean') {
+        // 한국 - 무조건 민화 (AI 선택 없음)
+        return {
+          success: true,
+          artist: '한국 민화',
+          reason: 'Korean traditional folk painting style',
+          prompt: fallbackPrompts.korean.prompt,
+          analysis: 'Korean minhwa style applied'
+        };
+      }
       
-      // 국가별 스타일 목록 명시
-      const styleExamples = {
-        'korean': `Example Korean prompts:
-- "Korean Minhwa folk painting style, bright vibrant colors (red, blue, yellow), bold dark outlines, flat decorative composition, auspicious symbols, cheerful mood"
-- "Korean literati ink painting style, restrained elegant brushwork, subtle ink gradations, Korean mountains and pine trees, Joseon scholar painting quality"
-- "Korean dancheong decorative painting, vibrant five traditional colors, symmetrical geometric patterns, ornate temple decoration, lotus and cloud motifs"`,
-        'chinese': `Example Chinese prompts:
-- "Chinese ink wash painting (Shuimohua), monochrome black ink, soft flowing brushstrokes, minimalist composition, elegant empty space, contemplative atmosphere"
-- "Chinese gongbi meticulous painting, extremely fine detailed brushwork, delicate precise lines, rich mineral pigments, birds and flowers, imperial court quality"
-- "Chinese landscape painting (shanshui), majestic towering mountains, misty atmosphere, blue-green mineral pigments, Song-Ming dynasty quality"`,
-        'japanese': `Example Japanese prompts:
-- "Japanese Ukiyo-e woodblock print style, flat areas of bold color, strong clear outlines, decorative patterns, stylized simplified forms"
-- "Japanese sumi-e ink painting, Zen Buddhist aesthetic, minimalist brushwork, spontaneous decisive strokes, wabi-sabi beauty"
-- "Japanese Rinpa school decorative painting, luxurious gold and silver leaf backgrounds, elegant curved flowing forms, stylized nature motifs"`
-      };
+      if (styleId === 'japanese') {
+        // 일본 - 무조건 우키요에 (AI 선택 없음)
+        return {
+          success: true,
+          artist: '일본 우키요에',
+          reason: 'Japanese traditional ukiyo-e style',
+          prompt: fallbackPrompts.japanese.prompt,
+          analysis: 'Japanese ukiyo-e style applied'
+        };
+      }
       
-      const examples = styleExamples[selectedStyle.id] || styleExamples['korean'];
-      
-      promptText = `You are analyzing a photo to transform it into ${countryEn} traditional art style.
+      if (styleId === 'chinese') {
+        // 중국 - AI 선택 (수묵화 vs 공필화)
+        promptText = `Analyze this photo and select the best Chinese traditional art style.
 
-CRITICAL RULES:
-1. You MUST select a style ONLY from ${countryEn} traditional art
-2. Do NOT mix elements from Chinese, Korean, or Japanese art
-3. Your FLUX prompt MUST start with "${countryEn}" explicitly
-4. Your FLUX prompt MUST include specific ${countryEn} techniques and aesthetics
-5. DO NOT use generic "East Asian" or "Oriental" terms
+You must choose between TWO styles only:
 
-${examples}
+Style 1: Chinese Ink Wash Painting (水墨畫 Shuimohua)
+- Best for: landscapes, nature, contemplative subjects, simple compositions
+- Technique: monochrome black ink, soft brushstrokes, minimalist, empty space
+- Mood: serene, meditative, scholarly
 
-Analyze this photo and select the BEST specific ${countryEn} traditional art style.
+Style 2: Chinese Gongbi Meticulous Painting (工筆畫)
+- Best for: portraits, flowers, birds, detailed subjects, colorful compositions
+- Technique: fine detailed lines, rich mineral colors, ornate patterns
+- Mood: decorative, luxurious, imperial
+
+Analyze the photo and choose the MOST suitable style.
 
 Return ONLY valid JSON (no markdown):
 {
-  "analysis": "brief photo analysis (1 sentence)",
-  "selected_artist": "${countryEn} traditional art",
-  "selected_style": "specific ${countryEn} style (e.g., minhwa, sumukhwa, dancheong, shuimohua, gongbi, shanshui, ukiyo-e, sumi-e, rinpa)",
-  "reason": "why this ${countryEn} style matches (1 sentence)",
-  "prompt": "Your FLUX prompt MUST follow this format: '${countryEn} [specific style name] style, [that style's distinctive characteristics], [colors/techniques specific to ${countryEn}], [mood/aesthetic specific to ${countryEn}], depicting the subject while preserving original features'"
+  "analysis": "brief photo description (1 sentence)",
+  "selected_artist": "Chinese ink wash painting" or "Chinese gongbi painting",
+  "selected_style": "ink_wash" or "gongbi",
+  "reason": "why this style fits (1 sentence)",
+  "prompt": "Complete FLUX prompt starting with 'Chinese [style name] style, [detailed characteristics]...'"
 }
 
-CRITICAL: The prompt field must be a complete FLUX prompt that clearly specifies ${countryEn} art characteristics, not a generic description!
-
 Keep it concise and accurate.`;
+      }
       
     } else {
       // 미술사조: 사조 내 화가 중 최적 선택
@@ -389,8 +351,32 @@ export default async function handler(req, res) {
     let selectionMethod;
     let selectionDetails = {};
 
-    // AI 자동 선택 시도 (ANTHROPIC_API_KEY 있을 때만)
-    if (process.env.ANTHROPIC_API_KEY) {
+    // 동양화 중 한국/일본은 AI 없이 바로 처리
+    if (selectedStyle.category === 'oriental' && 
+        (selectedStyle.id === 'korean' || selectedStyle.id === 'japanese')) {
+      console.log(`Oriental art (${selectedStyle.id}) - using direct fallback`);
+      
+      let fallbackKey;
+      if (selectedStyle.id === 'korean') {
+        fallbackKey = 'korean';
+      } else if (selectedStyle.id === 'japanese') {
+        fallbackKey = 'japanese';
+      }
+      
+      const fallback = fallbackPrompts[fallbackKey];
+      if (!fallback) {
+        throw new Error(`No fallback prompt for: ${fallbackKey}`);
+      }
+      
+      finalPrompt = fallback.prompt;
+      selectedArtist = fallback.name;
+      selectionMethod = 'oriental_direct';
+      selectionDetails = {
+        style: fallbackKey
+      };
+      
+    } else if (process.env.ANTHROPIC_API_KEY) {
+      // 미술사조/거장/중국 전통회화는 AI 자동 선택 시도
       console.log(`Trying AI artist selection for ${selectedStyle.name}...`);
       
       const aiResult = await selectArtistWithAI(
@@ -461,8 +447,15 @@ export default async function handler(req, res) {
           fallbackKey = 'van_gogh';
         }
       } else if (selectedStyle.category === 'oriental') {
-        // 'korean' → 'korean' (그대로 사용)
-        fallbackKey = selectedStyle.id;
+        // 동양화: 간단하게 처리
+        if (selectedStyle.id === 'korean') {
+          fallbackKey = 'korean';
+        } else if (selectedStyle.id === 'chinese') {
+          // 중국은 기본 수묵화
+          fallbackKey = 'chinese_ink';
+        } else if (selectedStyle.id === 'japanese') {
+          fallbackKey = 'japanese';
+        }
       }
       
       console.log('Using fallback key:', fallbackKey);

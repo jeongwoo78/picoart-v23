@@ -1,4 +1,4 @@
-// PicoArt v23 - Style Transfer API (FLUX Depth + AI Selection)
+// PicoArt v25 - Style Transfer API (FLUX Depth + AI Selection)
 import { MODEL_CONFIG } from './modelConfig';
 
 // File to Base64 conversion

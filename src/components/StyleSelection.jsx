@@ -1,4 +1,4 @@
-// PicoArt v23 - StyleSelection (간소화: AI가 자동 선택)
+// PicoArt v25 - StyleSelection (간소화: AI가 자동 선택)
 import React, { useState } from 'react';
 import { educationContent } from '../data/educationContent';
 

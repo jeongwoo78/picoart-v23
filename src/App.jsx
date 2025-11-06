@@ -1,4 +1,4 @@
-// PicoArt v22 - Main App
+// PicoArt v25 - Main App (동양화 단순화 버전)
 import React, { useState } from 'react';
 import UploadScreen from './components/UploadScreen';
 import StyleSelection from './components/StyleSelection';
@@ -46,7 +46,7 @@ const App = () => {
           <div className="header-content">
             <h1 className="app-title">🎨 PicoArt</h1>
             <p className="app-tagline">AI가 당신의 사진을 거장의 그림으로</p>
-            <p className="app-version">v23 - 3단계 카테고리 구조 / AI 자동 선택</p>
+            <p className="app-version">v25 - 동양화 단순화 (한국 민화, 중국 수묵/공필, 일본 우키요에)</p>
           </div>
         </header>
       )}

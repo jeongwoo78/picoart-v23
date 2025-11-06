@@ -1,7 +1,8 @@
-// PicoArt v23 - ResultScreen (AI 기반 2차 교육 시스템)
-// 결과물: AI가 실시간 생성하는 화가/화법 설명
+// PicoArt v25 - ResultScreen (단순화된 동양화 교육)
+// 결과물: 미리 작성된 동양화 설명 + AI 생성 미술사조/거장 설명
 import React, { useState, useEffect } from 'react';
 import BeforeAfter from './BeforeAfter';
+import { orientalEducation } from '../data/educationContent';
 
 const ResultScreen = ({ originalPhoto, resultImage, selectedStyle, aiSelectedArtist, onReset }) => {
   const [showInfo, setShowInfo] = useState(true);
@@ -17,6 +18,17 @@ const ResultScreen = ({ originalPhoto, resultImage, selectedStyle, aiSelectedArt
     try {
       setIsLoadingEducation(true);
       
+      // 동양화는 미리 작성된 콘텐츠 사용 (AI 호출 없음)
+      if (selectedStyle.category === 'oriental') {
+        const content = getOrientalEducation();
+        if (content) {
+          setEducationText(content);
+          setIsLoadingEducation(false);
+          return;
+        }
+      }
+      
+      // 미술사조/거장만 AI 생성
       const prompt = buildPrompt();
       
       // 백엔드 API 호출
@@ -47,6 +59,36 @@ const ResultScreen = ({ originalPhoto, resultImage, selectedStyle, aiSelectedArt
     } finally {
       setIsLoadingEducation(false);
     }
+  };
+
+  // 동양화 교육 콘텐츠 가져오기 (미리 작성된 것)
+  const getOrientalEducation = () => {
+    const styleId = selectedStyle.id;
+    
+    // 한국 - 민화 (고정)
+    if (styleId === 'korean') {
+      return orientalEducation.korean.description;
+    }
+    
+    // 중국 - AI 선택 결과에 따라 수묵화/공필화
+    if (styleId === 'chinese') {
+      // aiSelectedArtist에서 스타일 판단
+      const artist = aiSelectedArtist?.toLowerCase() || '';
+      
+      if (artist.includes('gongbi') || artist.includes('공필')) {
+        return orientalEducation.chinese_gongbi.description;
+      } else {
+        // 기본은 수묵화
+        return orientalEducation.chinese_ink.description;
+      }
+    }
+    
+    // 일본 - 우키요에 (고정)
+    if (styleId === 'japanese') {
+      return orientalEducation.japanese.description;
+    }
+    
+    return null;
   };
 
   // 카테고리별 프롬프트 생성
@@ -140,49 +182,8 @@ const ResultScreen = ({ originalPhoto, resultImage, selectedStyle, aiSelectedArt
 "나는 별이 되고 싶다"고 썼던 그의 꿈이 당신의 사진 속에서 빛나고 있습니다.`;
     }
     
-    // 동양화
-    if (category === 'oriental') {
-      // 국가 명확히 구분
-      const countryMap = {
-        'korean': '한국',
-        'chinese': '중국',
-        'japanese': '일본'
-      };
-      
-      const country = countryMap[selectedStyle.id] || '한국';
-      
-      return `당신은 동양미술사 전문가입니다.
-사용자가 선택한 국가는 "${country}"이고,
-당신이 적용한 스타일은 "${aiSelectedArtist || country + ' 전통 기법'}"입니다.
-
-CRITICAL: 반드시 "${country}" 전통 미술에 대해서만 작성하세요.
-- 한국이면 한국 민화, 한국 수묵화, 한국 단청만
-- 중국이면 중국 수묵화, 중국 공필화, 중국 산수화만
-- 일본이면 일본 우키요에, 일본 수묵화, 일본 린파만
-
-다른 국가의 미술을 절대 언급하지 마세요.
-
-다음 형식으로 정확히 3-4문장으로 작성하세요:
-
-1문장: "당신의 사진에는 ${country} {스타일명}의 {특징적 기법과 재료} 기법이 적용되었습니다."
-2문장: "${country} {스타일명}은 {시대}에 {계층/목적}으로 발전한 {장르}로, {핵심 철학과 미학을 상세히} 설명."
-3문장: "대표 주제로는 {주제1}, {주제2}, {주제3} 등이 있으며, {주제들이 담은 의미를 한 문장으로}."
-4문장(선택): "{동서양 미술의 차이나 현대적 의미, 또는 당신 사진과의 연결을 한 문장으로}"
-
-예시 (한국만):
-당신의 사진에는 한국 민화의 해학적 표현과 오방색 배색 기법이 적용되었습니다.
-
-한국 민화는 조선시대 서민들이 벽사와 소망을 담기 위해 발전시킨 장식화로, 
-격식에 얽매이지 않은 자유로운 구도와 밝고 순수한 색채로 
-삶의 희망을 표현하는 것이 특징입니다.
-
-대표 주제로는 나쁜 기운을 쫓는 까치호랑이, 학문의 성취를 바라는 문자도,
-부귀와 다산을 상징하는 모란과 석류 등이 있으며, 이들은 모두 
-평범한 사람들의 소박하지만 간절한 꿈을 담고 있습니다.
-
-서양 미술이 현실을 재현하려 했다면 한국 민화는 꿈꾸는 세상을 그렸고,
-그 따뜻한 시선이 당신의 사진에도 깃들어 있습니다.`;
-    }
+    // 동양화는 미리 작성된 콘텐츠 사용 (이 함수 호출 안 됨)
+    // getOrientalEducation()에서 처리
     
     return '';
   };

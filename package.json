@@ -1,7 +1,7 @@
 {
-  "name": "picoart-v23",
+  "name": "picoart-v25",
   "private": true,
-  "version": "23.0.0",
+  "version": "25.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
